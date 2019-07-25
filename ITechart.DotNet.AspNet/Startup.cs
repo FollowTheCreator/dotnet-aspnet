@@ -26,6 +26,11 @@ namespace ITechart.DotNet.AspNet
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            string connection = Configuration.GetConnectionString("PeopleDatabase");
+            services.AddDbContext<PeopleDbContext>(options =>
+                options.UseSqlServer(connection)
+            );
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
