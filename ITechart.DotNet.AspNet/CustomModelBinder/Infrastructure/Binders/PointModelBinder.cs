@@ -18,43 +18,69 @@ namespace ITechart.DotNet.AspNet.CustomModelBinder.Infrastructure.Binders
             var modelName = bindingContext.ModelName;
 
             var value = bindingContext
-                .HttpContext
-                .Request
-                .QueryString
-                .Value;
+                .ValueProvider
+                .GetValue(modelName)
+                .FirstValue;
 
-            if (string.IsNullOrEmpty(value) || !value.Contains(modelName))
+            if (string.IsNullOrEmpty(value))
             {
+                bindingContext.ModelState.TryAddModelError(
+                            modelName,
+                            $"{modelName} must be exist.");
+
+                bindingContext.Result = ModelBindingResult.Failed();
+
                 return Task.CompletedTask;
             }
 
-            var coordsArray = value.Replace($"?{modelName}", string.Empty).Split(',');
+            var coordsArray = value.Replace($"{modelName}", string.Empty).Split(',');
 
             if (coordsArray.Count() != 3)
             {
+                bindingContext.ModelState.TryAddModelError(
+                            modelName,
+                            $"{modelName} must have 3 arguments.");
+
+                bindingContext.Result = ModelBindingResult.Failed();
+
                 return Task.CompletedTask;
             }
 
             coordsArray[0] = coordsArray[0].Replace("=", string.Empty);
 
             int coord = 0;
+            bool isSuccessfully = true;
             int[] coords = coordsArray
                 .Select(item =>
                 {
-                    int.TryParse(item, out coord);
+                    if(!int.TryParse(item, out coord))
+                    {
+                        bindingContext.ModelState.TryAddModelError(
+                            modelName,
+                            $"{modelName} must be an integer.");
+
+                        isSuccessfully = false;
+                    }
 
                     return coord;
                 })
                 .ToArray();
 
-            bindingContext.Result = ModelBindingResult.Success(
-                new Point
-                {
-                    X = coords[0],
-                    Y = coords[1],
-                    Z = coords[2]
-                }
-            );
+            if(isSuccessfully)
+            {
+                bindingContext.Result = ModelBindingResult.Success(
+                    new Point
+                    {
+                        X = coords[0],
+                        Y = coords[1],
+                        Z = coords[2]
+                    }
+                );
+            }
+            else
+            {
+                bindingContext.Result = ModelBindingResult.Failed();
+            }
 
             return Task.CompletedTask;
         }

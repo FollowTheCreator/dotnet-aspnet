@@ -14,19 +14,33 @@ namespace ITechart.DotNet.AspNet.CustomModelBinder.Infrastructure.Binders
                 throw new ArgumentNullException(nameof(bindingContext));
             }
 
+            var modelName = bindingContext.ModelName;
+
             var valueProviderResult = bindingContext
                 .ValueProvider
-                .GetValue("id");
+                .GetValue(modelName);
 
             if (valueProviderResult == ValueProviderResult.None)
             {
+                bindingContext.ModelState.TryAddModelError(
+                           modelName,
+                           "Id must be exist.");
+
+                bindingContext.Result = ModelBindingResult.Failed();
+
                 return Task.CompletedTask;
             }
 
             var value = valueProviderResult.FirstValue;
 
-            if (string.IsNullOrEmpty(value))
+            if (string.IsNullOrEmpty(value) || value.Length != 48)
             {
+                bindingContext.ModelState.TryAddModelError(
+                           modelName,
+                           "Id must have a value in base64 of Guid format.");
+
+                bindingContext.Result = ModelBindingResult.Failed();
+
                 return Task.CompletedTask;
             }
 

@@ -20,9 +20,14 @@ namespace ITechart.DotNet.AspNet.CustomModelBinder.Controllers
         }
 
         [Route("{id}")]
-        public async Task<Person> GetPersonById([ModelBinder(typeof(PersonModelBinder))]Guid id)
+        public async Task<ActionResult> GetPersonById([ModelBinder(BinderType = typeof(PersonModelBinder), Name = "id")]Guid id)
         {
-            return await _context.People.Where(person => person.Id == id).FirstOrDefaultAsync();
+            if (!ModelState.IsValid)
+            {
+                return await Task.Run(() => BadRequest(ModelState));
+            }
+
+            return await Task.Run(() => Json(_context.People.Where(item => item.Id == id).FirstOrDefault()));
         }
     }
 }

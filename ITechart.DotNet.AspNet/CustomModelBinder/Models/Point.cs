@@ -1,5 +1,9 @@
-﻿namespace ITechart.DotNet.AspNet.CustomModelBinder.Models
+﻿using ITechart.DotNet.AspNet.CustomModelBinder.Infrastructure.Binders;
+using Microsoft.AspNetCore.Mvc;
+
+namespace ITechart.DotNet.AspNet.CustomModelBinder.Models
 {
+    [ModelBinder(BinderType = typeof(PointModelBinder))]
     public class Point
     {
         public int X { get; set; }
