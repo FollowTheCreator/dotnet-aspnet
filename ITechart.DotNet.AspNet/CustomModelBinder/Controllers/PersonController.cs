@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using ITechart.DotNet.AspNet.CustomModelBinder.Infrastructure;
 using ITechart.DotNet.AspNet.CustomModelBuilder.Models.Contexts;
 using ITechart.DotNet.AspNet.CustomModelBuilder.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using ITechart.DotNet.AspNet.CustomModelBinder.Infrastructure.Binders;
 
 namespace ITechart.DotNet.AspNet.CustomModelBinder.Controllers
 {

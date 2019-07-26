@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System;
 using System.Threading.Tasks;
 
-namespace ITechart.DotNet.AspNet.CustomModelBinder.Infrastructure
+namespace ITechart.DotNet.AspNet.CustomModelBinder.Infrastructure.Binders
 {
     public class PersonModelBinder : IModelBinder
     {
@@ -30,7 +30,7 @@ namespace ITechart.DotNet.AspNet.CustomModelBinder.Infrastructure
                 return Task.CompletedTask;
             }
 
-            bindingContext.Result = ModelBindingResult.Success(Base64Coder.DecodeToGuid(value));
+            bindingContext.Result = ModelBindingResult.Success(value.DecodeToGuid());
 
             return Task.CompletedTask;
         }

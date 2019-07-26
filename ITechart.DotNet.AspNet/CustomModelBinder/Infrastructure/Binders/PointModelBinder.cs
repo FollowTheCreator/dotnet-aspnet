@@ -4,9 +4,9 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ITechart.DotNet.AspNet.CustomModelBinder.Infrastructure
+namespace ITechart.DotNet.AspNet.CustomModelBinder.Infrastructure.Binders
 {
-    public class PointWithoutEqualsModelBinder : IModelBinder
+    public class PointModelBinder : IModelBinder
     {
         public Task BindModelAsync(ModelBindingContext bindingContext)
         {
@@ -15,33 +15,35 @@ namespace ITechart.DotNet.AspNet.CustomModelBinder.Infrastructure
                 throw new ArgumentNullException(nameof(bindingContext));
             }
 
+            var modelName = bindingContext.ModelName;
+
             var value = bindingContext
                 .HttpContext
                 .Request
                 .QueryString
                 .Value;
 
-            if (string.IsNullOrEmpty(value))
+            if (string.IsNullOrEmpty(value) || !value.Contains(modelName))
             {
                 return Task.CompletedTask;
             }
 
-            var coordsArray = value.Replace("?coordinates", string.Empty).Split(',');
+            var coordsArray = value.Replace($"?{modelName}", string.Empty).Split(',');
 
             if (coordsArray.Count() != 3)
             {
                 return Task.CompletedTask;
             }
 
-            int[] coords = coordsArray
-                .Select(coord =>
-                {
-                    if (String.IsNullOrEmpty(coord))
-                    {
-                        return 0;
-                    }
+            coordsArray[0] = coordsArray[0].Replace("=", string.Empty);
 
-                    return int.Parse(coord);
+            int coord = 0;
+            int[] coords = coordsArray
+                .Select(item =>
+                {
+                    int.TryParse(item, out coord);
+
+                    return coord;
                 })
                 .ToArray();
 
