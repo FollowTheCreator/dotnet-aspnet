@@ -24,7 +24,7 @@ namespace ITechart.DotNet.AspNet.CustomModelBinder.Infrastructure.Binders
             {
                 bindingContext.ModelState.TryAddModelError(
                            modelName,
-                           "Id must be exist.");
+                           $"{modelName} must exist.");
 
                 bindingContext.Result = ModelBindingResult.Failed();
 
@@ -37,7 +37,7 @@ namespace ITechart.DotNet.AspNet.CustomModelBinder.Infrastructure.Binders
             {
                 bindingContext.ModelState.TryAddModelError(
                            modelName,
-                           "Id must have a value in base64 of Guid format.");
+                           $"{modelName} must have a value in base64 of Guid format.");
 
                 bindingContext.Result = ModelBindingResult.Failed();
 

@@ -16,10 +16,10 @@ namespace ITechart.DotNet.AspNet.CustomModelBinder.Controllers
         {
             if(!ModelState.IsValid)
             {
-                return await Task.Run(() => BadRequest(ModelState));
+                return await Task.FromResult(BadRequest(ModelState));
             }
 
-            return await Task.Run(() => Json(point));
+            return await Task.FromResult(Json(point));
         }
 
         [Route("{users-nearby}")]
@@ -27,10 +27,10 @@ namespace ITechart.DotNet.AspNet.CustomModelBinder.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return await Task.Run(() => BadRequest(ModelState));
+                return await Task.FromResult(BadRequest(ModelState));
             }
 
-            return await Task.Run(() => Json(new List<Point> { point }));
+            return await Task.FromResult(Json(new List<Point> { point }));
         }
     }
 }

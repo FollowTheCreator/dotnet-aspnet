@@ -26,7 +26,7 @@ namespace ITechart.DotNet.AspNet.CustomModelBinder.Infrastructure.Binders
             {
                 bindingContext.ModelState.TryAddModelError(
                             modelName,
-                            $"{modelName} must be exist.");
+                            $"{modelName} must exist.");
 
                 bindingContext.Result = ModelBindingResult.Failed();
 
