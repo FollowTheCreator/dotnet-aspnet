@@ -46,8 +46,6 @@ namespace ITechart.DotNet.AspNet.CustomModelBinder.Infrastructure.Binders
                 return Task.CompletedTask;
             }
 
-            coordsArray[0] = coordsArray[0].Replace("=", string.Empty);
-
             int coord = 0;
             bool isSuccessfully = true;
             int[] coords = coordsArray

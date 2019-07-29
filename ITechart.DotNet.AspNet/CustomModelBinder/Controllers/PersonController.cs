@@ -24,10 +24,10 @@ namespace ITechart.DotNet.AspNet.CustomModelBinder.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return await Task.FromResult(BadRequest(ModelState));
+                return BadRequest(ModelState);
             }
 
-            return await Task.FromResult(Json(_context.People.Where(item => item.Id == id).FirstOrDefault()));
+            return Json(await _context.People.Where(item => item.Id == id).FirstOrDefaultAsync());
         }
     }
 }

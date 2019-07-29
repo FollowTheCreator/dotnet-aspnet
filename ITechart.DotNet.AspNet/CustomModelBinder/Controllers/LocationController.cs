@@ -12,25 +12,29 @@ namespace ITechart.DotNet.AspNet.CustomModelBinder.Controllers
     [Route("api/location")]
     public class LocationController : Controller
     {
-        public async Task<ActionResult> GetPoint([ModelBinder(Name = "coordinates")]Point point)
+        public ActionResult GetPoint([ModelBinder(Name = "coordinates")]Point point)
         {
             if(!ModelState.IsValid)
             {
-                return await Task.FromResult(BadRequest(ModelState));
+                return BadRequest(ModelState);
             }
 
-            return await Task.FromResult(Json(point));
+            return Json(point);
         }
 
         [Route("{users-nearby}")]
-        public async Task<ActionResult> GetUsersNearby([ModelBinder(Name = "point")]Point point, int radius)
+        public ActionResult GetUsersNearby([ModelBinder(Name = "point")]Point point, int radius)
         {
             if (!ModelState.IsValid)
             {
-                return await Task.FromResult(BadRequest(ModelState));
+                return BadRequest(ModelState);
             }
 
-            return await Task.FromResult(Json(new List<Point> { point }));
+            return Json(new
+            {
+                PointList = new List<Point> { point },
+                Radius = radius
+            });
         }
     }
 }
