@@ -1,0 +1,86 @@
+﻿@model ProfilesViewModel
+
+<div id="profilesPage" class="pt-4">
+    <form method="get">
+        <div class="form-inline form-group ml-2">
+            @Html.TextBox("filter", ViewData["Filter"], new { @class = "form-control", placeholder = "Type filter data here...", autocomplete = "off" })
+
+            <input type="submit" value="Filter" class="btn btn-secondary ml-2" />
+        </div>
+    </form>
+
+    <table class="table">
+        <thead class="thead-light">
+            <tr>
+                <th class="text-dark">
+                    Id
+                </th>
+                <th>
+                    @Html.ActionLink(
+                        ProfilesSortState.FirstName.ToString(),
+                        "Index",
+                        "Profiles",
+                        new { SortState = ProfilesSortState.FirstName, Filter = ViewData["Filter"] },
+                        new { @class = "text-dark" }
+                    )
+                </th>
+                <th>
+                    @Html.ActionLink(
+                        ProfilesSortState.LastName.ToString(),
+                        "Index",
+                        "Profiles",
+                        new { SortState = ProfilesSortState.LastName, Filter = ViewData["Filter"] },
+                        new { @class = "text-dark" }
+                    )
+                </th>
+                <th>
+                    @Html.ActionLink(
+                        ProfilesSortState.Birthday.ToString(),
+                        "Index",
+                        "Profiles",
+                        new { SortState = ProfilesSortState.Birthday, Filter = ViewData["Filter"] },
+                        new { @class = "text-dark" }
+                    )
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (Profile profile in Model.Profiles)
+            {
+                <tr>
+                    <td>@profile.Id</td>
+                    <td>@profile.FirstName</td>
+                    <td>@profile.LastName</td>
+                    <td>@profile.Birthday.ToBirthdayString()</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <div class="d-flex">
+        <div class="btn-group mx-auto">
+            @for (int i = 1; i <= Model.PageInfo.GetTotalPages(); i++)
+            {
+                if (i == Model.PageInfo.PageNumber)
+                {
+                    @Html.ActionLink(
+                        i.ToString(),
+                        "Index",
+                        "Profiles",
+                        new { PageNumber = i, SortState = ViewData["SortState"], Filter = ViewData["Filter"] },
+                        new { @class = "btn btn-secondary" }
+                    );
+                }
+                else
+                {
+                    @Html.ActionLink(
+                        i.ToString(),
+                        "Index",
+                        "Profiles",
+                        new { PageNumber = i, SortState = ViewData["SortState"], Filter = ViewData["Filter"] },
+                        new { @class = "btn btn-outline-secondary" }
+                    );
+                }
+            }
+        </div>
+    </div>
+</div>
