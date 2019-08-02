@@ -4,6 +4,6 @@
     {
         int TotalItems { get; set; }
 
-        int GetTotalPages();
+        int TotalPages { get; set; }
     }
 }

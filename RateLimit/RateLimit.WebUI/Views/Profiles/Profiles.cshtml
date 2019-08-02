@@ -16,31 +16,13 @@
                     Id
                 </th>
                 <th>
-                    @Html.ActionLink(
-                        ProfilesSortState.FirstName.ToString(),
-                        "Index",
-                        "Profiles",
-                        new { SortState = ProfilesSortState.FirstName, Filter = ViewData["Filter"] },
-                        new { @class = "text-dark" }
-                    )
+                    @Html.GenerateSortLink(ProfilesSortState.FirstName, ViewData)
                 </th>
                 <th>
-                    @Html.ActionLink(
-                        ProfilesSortState.LastName.ToString(),
-                        "Index",
-                        "Profiles",
-                        new { SortState = ProfilesSortState.LastName, Filter = ViewData["Filter"] },
-                        new { @class = "text-dark" }
-                    )
+                    @Html.GenerateSortLink(ProfilesSortState.LastName, ViewData)
                 </th>
                 <th>
-                    @Html.ActionLink(
-                        ProfilesSortState.Birthday.ToString(),
-                        "Index",
-                        "Profiles",
-                        new { SortState = ProfilesSortState.Birthday, Filter = ViewData["Filter"] },
-                        new { @class = "text-dark" }
-                    )
+                    @Html.GenerateSortLink(ProfilesSortState.Birthday, ViewData)
                 </th>
             </tr>
         </thead>
@@ -58,27 +40,15 @@
     </table>
     <div class="d-flex">
         <div class="btn-group mx-auto">
-            @for (int i = 1; i <= Model.PageInfo.GetTotalPages(); i++)
+            @for (int i = 1; i <= Model.PageInfo.TotalPages; i++)
             {
                 if (i == Model.PageInfo.PageNumber)
                 {
-                    @Html.ActionLink(
-                        i.ToString(),
-                        "Index",
-                        "Profiles",
-                        new { PageNumber = i, SortState = ViewData["SortState"], Filter = ViewData["Filter"] },
-                        new { @class = "btn btn-secondary" }
-                    );
+                    @Html.GeneratePageLink(i, ViewData, "btn btn-secondary");
                 }
                 else
                 {
-                    @Html.ActionLink(
-                        i.ToString(),
-                        "Index",
-                        "Profiles",
-                        new { PageNumber = i, SortState = ViewData["SortState"], Filter = ViewData["Filter"] },
-                        new { @class = "btn btn-outline-secondary" }
-                    );
+                    @Html.GeneratePageLink(i, ViewData, "btn btn-outline-secondary");
                 }
             }
         </div>

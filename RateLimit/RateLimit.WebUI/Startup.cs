@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using RateLimit.BLL.Services.Configuration;
 using RateLimit.BLL.Services.ProfileService;
+using RateLimit.DAL.Contexts;
+using RateLimit.DAL.Models;
+using RateLimit.DAL.Repositoriy;
 
 namespace RateLimit.WebUI
 {
@@ -31,8 +28,9 @@ namespace RateLimit.WebUI
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-           services.AddSingleton<IProfileService, JsonProfileService>();
-           services.AddSingleton<IConfig, Config>();
+            services.AddSingleton<IProfileService, JsonProfileService>();
+            services.AddSingleton<IRepository<Profile>, JsonProfileRepository>();
+            services.AddSingleton<IContext>(serviceProvider => new JsonContext(Configuration.GetSection("AppSettings")["JsonFilePath"]));
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }

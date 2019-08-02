@@ -3,50 +3,12 @@
 namespace RateLimit.BLL.Models.Profile
 {
     public class ProfilesConfigModel : IPageInfo, IFilterable, ISorterable
-    {
-        private int _pageNumber;
-
-        private int _pageSize;
-
+    { 
         public string Filter { get; set; }
 
-        public int PageNumber
-        {
-            get
-            {
-                if (_pageNumber == 0)
-                {
-                    _pageNumber = 1;
+        public int PageNumber { get; set; }
 
-                    return _pageNumber;
-                }
-
-                return _pageNumber;
-            }
-            set
-            {
-                _pageNumber = value;
-            }
-        }
-
-        public int PageSize
-        {
-            get
-            {
-                if (_pageSize == 0)
-                {
-                    _pageSize = 4;
-
-                    return _pageSize;
-                }
-
-                return _pageSize;
-            }
-            set
-            {
-                _pageSize = value;
-            }
-        }
+        public int PageSize { get; set; }
 
         public ProfilesSortState SortState { get; set; }
     }

@@ -1,12 +1,8 @@
-﻿using RateLimit.WebUI.Models.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace RateLimit.WebUI.Models.Profile
 {
-    public class ProfilesViewModel : IProfilesCollection
+    public class ProfilesViewModel
     {
         public IEnumerable<DAL.Models.Profile> Profiles { get; set; }
 

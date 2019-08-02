@@ -1,13 +1,11 @@
 ﻿using Newtonsoft.Json;
 using RateLimit.DAL.Models;
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 
 namespace RateLimit.DAL.Contexts
 {
-    public class JsonContext
+    public class JsonContext : IContext
     {
         public JsonContext(string path)
         {

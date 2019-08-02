@@ -1,9 +1,6 @@
-﻿using RateLimit.WebUI.Models.Interfaces;
-using System;
-
-namespace RateLimit.WebUI.Models
+﻿namespace RateLimit.WebUI.Models
 {
-    public class CollectionInfo : ICollectionInfo
+    public class CollectionInfo
     {
         public int PageNumber { get; set; }
 
@@ -11,9 +8,6 @@ namespace RateLimit.WebUI.Models
 
         public int TotalItems { get; set; }
 
-        public int GetTotalPages()
-        {
-            return (int)Math.Ceiling(TotalItems / (double)PageSize);
-        }
+        public int TotalPages { get; set; }
     }
 }

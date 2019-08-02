@@ -4,6 +4,6 @@ namespace RateLimit.BLL.Services.ProfileService
 {
     public interface IProfileService
     {
-        SearchResult Search(ProfilesConfigModel actionModel, string path);
+        SearchResult Search(ProfilesConfigModel actionModel);
     }
 }
