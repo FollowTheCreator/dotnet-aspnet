@@ -5,6 +5,8 @@ using RateLimit.BLL.Models;
 using RateLimit.BLL.Models.Profile;
 using Newtonsoft.Json;
 using Utils.Extensions;
+using RateLimit.DAL.Contexts;
+using RateLimit.DAL.Models;
 
 namespace RateLimit.BLL.Services.ProfileService
 {
@@ -34,9 +36,9 @@ namespace RateLimit.BLL.Services.ProfileService
 
         private IEnumerable<Profile> LoadFile(string path)
         {
-            var profiles = JsonConvert.DeserializeObject<IEnumerable<Profile>>(File.ReadAllText(path));
+            JsonContext context = new JsonContext(path);
 
-            return profiles;
+            return context.Profiles;
         }
 
         private IEnumerable<Profile> Filter(IEnumerable<Profile> data, string filter)

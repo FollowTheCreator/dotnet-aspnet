@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace RateLimit.BLL.Models.Profile
+namespace RateLimit.DAL.Models
 {
     public class Profile
     {

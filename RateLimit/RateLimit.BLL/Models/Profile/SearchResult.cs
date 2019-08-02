@@ -5,7 +5,7 @@ namespace RateLimit.BLL.Models.Profile
 {
     public class SearchResult : IProfilesCollection
     {
-        public IEnumerable<Profile> Profiles { get; set; }
+        public IEnumerable<DAL.Models.Profile> Profiles { get; set; }
 
         public CollectionInfo PageInfo { get; set; }
     }

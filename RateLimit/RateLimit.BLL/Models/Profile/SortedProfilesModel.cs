@@ -5,7 +5,7 @@ namespace RateLimit.BLL.Models.Profile
 {
     public class SortedProfilesModel : IProfilesCollection, IPageInfo, ISorterable
     {
-        public IEnumerable<Profile> Profiles { get; set; }
+        public IEnumerable<DAL.Models.Profile> Profiles { get; set; }
 
         public int PageNumber { get; set; }
 
