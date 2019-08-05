@@ -1,8 +1,4 @@
 ﻿using JsonFormatter.WebUI.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace JsonFormatter.WebUI.Utils
 {
@@ -10,7 +6,7 @@ namespace JsonFormatter.WebUI.Utils
     {
         public static TOut To<TIn, TOut>(TIn input) where TOut : class
         {
-            if (input.GetType() == typeof(DAL.Models.Profile))
+            if (typeof(TIn) == typeof(DAL.Models.Profile))
             {
                 var data = input as DAL.Models.Profile;
                 return new ProfileModel
