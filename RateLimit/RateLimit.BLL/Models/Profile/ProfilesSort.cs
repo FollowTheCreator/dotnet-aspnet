@@ -1,6 +1,6 @@
 ﻿namespace RateLimit.BLL.Models.Profile
 {
-    public enum ProfilesSortState
+    public enum ProfilesSort
     {
         Birthday,
         Id,

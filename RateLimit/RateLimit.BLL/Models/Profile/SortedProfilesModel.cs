@@ -3,14 +3,14 @@ using System.Collections.Generic;
 
 namespace RateLimit.BLL.Models.Profile
 {
-    public class SortedProfilesModel : IProfilesCollection, IPageInfo, ISorterable
+    class SortedProfilesModel : IProfilesCollection, IPageInfo, ISortable
     {
-        public IEnumerable<DAL.Models.Profile> Profiles { get; set; }
+        public IEnumerable<Profile> Profiles { get; set; }
 
         public int PageNumber { get; set; }
 
         public int PageSize { get; set; }
 
-        public ProfilesSortState SortState { get; set; }
+        public ProfilesSort SortState { get; set; }
     }
 }

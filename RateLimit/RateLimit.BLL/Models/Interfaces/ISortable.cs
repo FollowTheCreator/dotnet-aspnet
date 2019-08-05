@@ -2,8 +2,8 @@
 
 namespace RateLimit.BLL.Models.Interfaces
 {
-    interface ISorterable
+    interface ISortable
     {
-        ProfilesSortState SortState { get; set; }
+        ProfilesSort SortState { get; set; }
     }
 }

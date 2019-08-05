@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using RateLimit.DAL.Models;
 using RateLimit.WebUI.Models.Profile;
 using System;
 using System.Linq;
@@ -25,12 +24,12 @@ namespace RateLimit.WebUI.Utils
             if (input.GetType() == typeof(ProfilesConfigModel))
             {
                 var data = input as ProfilesConfigModel;
-                return new BLL.Models.Profile.ProfilesConfigModel
+                return new BLL.Models.Profile.ProfilesSearchRequest
                 {
                     Filter = data.Filter,
                     PageNumber = data.PageNumber,
                     PageSize = data.PageSize,
-                    SortState = (BLL.Models.Profile.ProfilesSortState)data.SortState
+                    SortState = (BLL.Models.Profile.ProfilesSort)data.SortState
                 } as TOut;
             }
 

@@ -29,7 +29,7 @@ namespace RateLimit.WebUI
             });
 
             services.AddSingleton<IProfileService, JsonProfileService>();
-            services.AddSingleton<IRepository<Profile>, JsonProfileRepository>();
+            services.AddSingleton<IProfileRepository, JsonProfileRepository>();
             services.AddSingleton<IContext>(serviceProvider => new JsonContext(Configuration.GetSection("AppSettings")["JsonFilePath"]));
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);

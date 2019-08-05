@@ -19,7 +19,7 @@ namespace RateLimit.WebUI.Controllers
         public ActionResult Index(ProfilesConfigModel configModel)
         {
             var viewModel = _profileService.Search(
-                Convert.To<ProfilesConfigModel, BLL.Models.Profile.ProfilesConfigModel>(configModel)
+                Convert.To<ProfilesConfigModel, BLL.Models.Profile.ProfilesSearchRequest>(configModel)
             );
 
             ViewData["SortState"] = configModel.SortState;

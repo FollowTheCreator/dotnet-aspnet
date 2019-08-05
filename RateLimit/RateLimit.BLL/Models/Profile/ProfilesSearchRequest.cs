@@ -2,7 +2,7 @@
 
 namespace RateLimit.BLL.Models.Profile
 {
-    public class ProfilesConfigModel : IPageInfo, IFilterable, ISorterable
+    public class ProfilesSearchRequest : IPageInfo, IFilterable, ISortable
     { 
         public string Filter { get; set; }
 
@@ -10,6 +10,6 @@ namespace RateLimit.BLL.Models.Profile
 
         public int PageSize { get; set; }
 
-        public ProfilesSortState SortState { get; set; }
+        public ProfilesSort SortState { get; set; }
     }
 }

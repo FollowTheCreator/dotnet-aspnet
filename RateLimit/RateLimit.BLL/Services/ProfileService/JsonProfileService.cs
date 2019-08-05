@@ -1,49 +1,44 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using RateLimit.BLL.Models;
+﻿using RateLimit.BLL.Models;
 using RateLimit.BLL.Models.Profile;
-using Utils.Extensions;
-using RateLimit.DAL.Models;
 using RateLimit.DAL.Repositoriy;
-using RateLimit.BLL.Models.Interfaces;
+using System;
+using System.Collections.Generic;
 
 namespace RateLimit.BLL.Services.ProfileService
 {
     public class JsonProfileService : IProfileService
     {
-        private readonly IRepository<Profile> _profileRepository;
+        private readonly IProfileRepository _profileRepository;
 
-        public JsonProfileService(IRepository<Profile> profileRepository)
+        public JsonProfileService(IProfileRepository profileRepository)
         {
             _profileRepository = profileRepository;
         }
 
-        public SearchResult Search(ProfilesConfigModel actionModel)
+        public SearchResult Search(ProfilesSearchRequest actionModel)
         {
-            if(actionModel.PageNumber == 0)
+            BoundariesCheck(actionModel);
+
+            var filteredCollectionCount = _profileRepository.Count(
+                new DAL.Models.JsonProfileReposotiry.ProfileFilter { Filter = actionModel.Filter }
+            );
+            var totalPages = (int)Math.Ceiling(filteredCollectionCount / (double)actionModel.PageSize);
+            var profiles = _profileRepository.Search(new DAL.Models.JsonProfileReposotiry.ProfileSearchFilter
             {
-                actionModel.PageNumber = 1;
-            }
+                PageNumber = actionModel.PageNumber,
+                PageSize = actionModel.PageSize,
+                SortState = (DAL.Models.JsonProfileReposotiry.ProfilesSort)actionModel.SortState
+            });
 
-            if(actionModel.PageSize == 0)
+            var convertedProfiles = new List<Profile>();
+            foreach(DAL.Models.Profile profile in profiles)
             {
-                actionModel.PageSize = 4;
+                convertedProfiles.Add(Utils.Convert.To<DAL.Models.Profile, Profile>(profile));
             }
-
-            var filteredCollection = Filter(_profileRepository.GetAll(), actionModel);
-
-            var filteredCollectionCount = filteredCollection.Count();
-            var totalPages = (int)System.Math.Ceiling(filteredCollection.Count() / (double)actionModel.PageSize);
 
             return new SearchResult
             {
-                Profiles = GetCollection(new SortedProfilesModel
-                {
-                    Profiles = filteredCollection,
-                    PageNumber = actionModel.PageNumber,
-                    PageSize = actionModel.PageSize,
-                    SortState = actionModel.SortState
-                }),
+                Profiles = convertedProfiles,
                 PageInfo = new CollectionInfo
                 {
                     PageNumber = actionModel.PageNumber,
@@ -54,60 +49,17 @@ namespace RateLimit.BLL.Services.ProfileService
             };
         }
 
-        private IEnumerable<Profile> Filter(IEnumerable<Profile> data, IFilterable filterable)
+        private void BoundariesCheck(ProfilesSearchRequest actionModel)
         {
-            if (string.IsNullOrEmpty(filterable.Filter))
+            if (actionModel.PageNumber == 0)
             {
-                return data;
+                actionModel.PageNumber = 1;
             }
 
-            return data.Where(profile =>
-                profile.Id.ToString().Contains(filterable.Filter) ||
-                profile.FirstName.Contains(filterable.Filter) ||
-                profile.LastName.Contains(filterable.Filter) ||
-                profile.Birthday.ToBirthdayString().Contains(filterable.Filter)
-            );
-        }
-
-        private IEnumerable<Profile> GetCollection(SortedProfilesModel sortedProfilesModel)
-        {
-            var profiles = sortedProfilesModel.Profiles;
-
-            profiles = Sort(profiles, sortedProfilesModel);
-
-            profiles = GetPage(profiles, sortedProfilesModel);
-
-            //Thread.Sleep(5000);
-
-            return profiles;
-        }
-
-        private IEnumerable<Profile> Sort(IEnumerable<Profile> profiles, ISorterable sorterable)
-        {
-            switch (sorterable.SortState)
+            if (actionModel.PageSize == 0)
             {
-                case ProfilesSortState.Id:
-                    profiles = profiles.OrderBy(profile => profile.Id);
-                    break;
-                case ProfilesSortState.FirstName:
-                    profiles = profiles.OrderBy(profile => profile.FirstName);
-                    break;
-                case ProfilesSortState.LastName:
-                    profiles = profiles.OrderBy(profile => profile.LastName);
-                    break;
-                default:
-                    profiles = profiles.OrderBy(profile => profile.Birthday);
-                    break;
+                actionModel.PageSize = 4;
             }
-
-            return profiles;
-        }
-
-        private IEnumerable<Profile> GetPage(IEnumerable<Profile> profiles, IPageInfo sorterable)
-        {
-            return profiles
-                .Skip((sorterable.PageNumber - 1) * sorterable.PageSize)
-                .Take(sorterable.PageSize);
         }
     }
 }
