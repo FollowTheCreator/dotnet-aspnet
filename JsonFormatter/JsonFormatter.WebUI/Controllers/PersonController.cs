@@ -22,22 +22,28 @@ namespace JsonFormatter.WebUI.Controllers
         public async Task<ActionResult<ResponseProfileModel>> Index(int id)
         {
             var dbResult = Utils.Convert.To<DAL.Models.Profile, ProfileModel>(await _repository.GetByIdAsync(id));
-            var link = string.Empty;
-            if (Request.IsHttps)
-            {
-                link = $"https://{Request.Host}/api/profile/{id}";
-            }
-            else
-            {
-                link = $"http://{Request.Host}/api/profile/{id}";
-            }
 
+            var link = GetLink(id);
+            
             var result = new ResponseProfileModel
             {
                 Data = dbResult,
                 Link = link
             };
             return result;
+        }
+
+        [NonAction]
+        private string GetLink(int id)
+        {
+            var link = "http";
+            if (Request.IsHttps)
+            {
+                link += "s";
+            }
+            link += $"://{Request.Host}/api/profile/{id}";
+
+            return link;
         }
     }
 }

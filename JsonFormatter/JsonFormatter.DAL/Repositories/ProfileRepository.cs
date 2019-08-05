@@ -19,11 +19,5 @@ namespace JsonFormatter.DAL.Repositories
                 .Profiles
                 .FirstOrDefaultAsync(profile => profile.Id == id);
         }
-
-        public async Task UpdateAsync(Profile profile)
-        {
-            _context.Profiles.Update(profile);
-            await _context.SaveChangesAsync();
-        }
     }
 }
