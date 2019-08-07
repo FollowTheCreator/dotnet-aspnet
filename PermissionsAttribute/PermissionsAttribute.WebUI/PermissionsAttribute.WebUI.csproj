@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\PermissionsAttribute.BLL\PermissionsAttribute.BLL.csproj" />
     <ProjectReference Include="..\PermissionsAttribute.DAL\PermissionsAttribute.DAL.csproj" />
   </ItemGroup>
 

@@ -1,23 +1,22 @@
-﻿using PermissionsAttribute.WebUI.Models;
+﻿using PermissionsAttribute.BLL.Models;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Text;
 
-namespace PermissionsAttribute.WebUI.Utils
+namespace PermissionsAttribute.BLL.Utils
 {
     class Convert
     {
         public static TOut To<TIn, TOut>(TIn input) where TOut : class
         {
-            if(input == null)
+            if (input == null)
             {
                 return default;
             }
 
-            if (typeof(TIn) == typeof(BLL.Models.Profile))
+            if (typeof(TIn) == typeof(DAL.Models.Profile))
             {
-                var data = input as BLL.Models.Profile;
+                var data = input as DAL.Models.Profile;
                 return new Profile
                 {
                     Id = data.Id,
@@ -25,24 +24,24 @@ namespace PermissionsAttribute.WebUI.Utils
                     Email = data.Email,
                     PasswordHash = data.PasswordHash,
                     RoleId = data.RoleId,
-                    Role = To<BLL.Models.Role, Role>(data.Role)
+                    Role = To<DAL.Models.Role, Role>(data.Role)
                 } as TOut;
             }
 
-            if (typeof(TIn) == typeof(BLL.Models.Role))
+            if (typeof(TIn) == typeof(DAL.Models.Role))
             {
-                var data = input as BLL.Models.Role;
+                var data = input as DAL.Models.Role;
 
                 var profilesCollection = new List<Profile>();
-                foreach(var profile in data.Profile)
+                foreach (var profile in data.Profile)
                 {
-                    profilesCollection.Add(To<BLL.Models.Profile, Profile>(profile));
+                    profilesCollection.Add(To<DAL.Models.Profile, Profile>(profile));
                 }
 
                 var rolePermissionCollection = new List<RolePermission>();
                 foreach (var rolePermission in data.RolePermission)
                 {
-                    rolePermissionCollection.Add(To<BLL.Models.RolePermission, RolePermission>(rolePermission));
+                    rolePermissionCollection.Add(To<DAL.Models.RolePermission, RolePermission>(rolePermission));
                 }
 
                 return new Role
@@ -54,27 +53,27 @@ namespace PermissionsAttribute.WebUI.Utils
                 } as TOut;
             }
 
-            if (typeof(TIn) == typeof(BLL.Models.RolePermission))
+            if (typeof(TIn) == typeof(DAL.Models.RolePermission))
             {
-                var data = input as BLL.Models.RolePermission;
+                var data = input as DAL.Models.RolePermission;
                 return new RolePermission
                 {
                     Id = data.Id,
-                    Permission = To<BLL.Models.Permission, Permission>(data.Permission),
-                    Role = To<BLL.Models.Role, Role>(data.Role),
+                    Permission = To<DAL.Models.Permission, Permission>(data.Permission),
+                    Role = To<DAL.Models.Role, Role>(data.Role),
                     PermissionId = data.PermissionId,
                     RoleId = data.RoleId
                 } as TOut;
             }
 
-            if (typeof(TIn) == typeof(BLL.Models.Permission))
+            if (typeof(TIn) == typeof(DAL.Models.Permission))
             {
-                var data = input as BLL.Models.Permission;
+                var data = input as DAL.Models.Permission;
 
                 var rolePermissionCollection = new List<RolePermission>();
                 foreach (var rolePermission in data.RolePermission)
                 {
-                    rolePermissionCollection.Add(To<BLL.Models.RolePermission, RolePermission>(rolePermission));
+                    rolePermissionCollection.Add(To<DAL.Models.RolePermission, RolePermission>(rolePermission));
                 }
 
                 return new Permission

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using PermissionsAttribute.DAL.Repositories;
+using PermissionsAttribute.BLL.Services;
 using PermissionsAttribute.WebUI.Models;
 
 namespace PermissionsAttribute.WebUI.Controllers
@@ -11,23 +11,19 @@ namespace PermissionsAttribute.WebUI.Controllers
     [Route("Profiles")]
     public class ProfileController : Controller
     {
-        private readonly IProfileRepository _repository;
+        private readonly IProfileService _service;
 
-        public ProfileController(IProfileRepository repository)
+        public ProfileController(IProfileService service)
         {
-            _repository = repository;
+            _service = service;
         }
 
         [Route("")]
         public async Task<ActionResult<IEnumerable<Profile>>> GetAllProfiles()
         {
-            var profiles = await _repository.GetAllAsync();
+            var profiles = await _service.GetAllAsync();
 
-            var convertedProfiles = new List<Profile>();
-            foreach(var profile in profiles)
-            {
-                convertedProfiles.Add(Utils.Convert.To<DAL.Models.Profile, Profile>(profile));
-            }
+            var convertedProfiles = profiles.Select(x => Utils.Convert.To<BLL.Models.Profile, Profile>(x)).ToList();
 
             return convertedProfiles;
         }
@@ -35,9 +31,9 @@ namespace PermissionsAttribute.WebUI.Controllers
         [Route("{id}")]
         public async Task<ActionResult<Profile>> GetProfileById(int id)
         {
-            var profile = await _repository.GetByIdAsync(id);
+            var profile = await _service.GetByIdAsync(id);
 
-            var convertedProfile = Utils.Convert.To<DAL.Models.Profile, Profile>(profile);
+            var convertedProfile = Utils.Convert.To<BLL.Models.Profile, Profile>(profile);
 
             return convertedProfile;
         }

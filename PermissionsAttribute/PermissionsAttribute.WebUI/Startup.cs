@@ -9,7 +9,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using PermissionsAttribute.BLL.Services;
 using PermissionsAttribute.DAL.Models;
+using PermissionsAttribute.DAL.Models.Contexts;
 using PermissionsAttribute.DAL.Repositories;
 
 namespace PermissionsAttribute.WebUI
@@ -37,7 +39,8 @@ namespace PermissionsAttribute.WebUI
             services.AddDbContext<PermissionsDbContext>(options =>
                 options.UseSqlServer(connection));
 
-            services.AddTransient<IProfileRepository, ProfileRepository>();
+            services.AddScoped<IProfileService, ProfileService>();
+            services.AddScoped<IProfileRepository, ProfileRepository>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)

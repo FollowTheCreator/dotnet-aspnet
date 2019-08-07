@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace test.Models
+namespace PermissionsAttribute.BLL.Models
 {
     public partial class Role
     {
@@ -12,9 +12,11 @@ namespace test.Models
         }
 
         public int Id { get; set; }
+
         public string Name { get; set; }
 
         public ICollection<Profile> Profile { get; set; }
+
         public ICollection<RolePermission> RolePermission { get; set; }
     }
 }

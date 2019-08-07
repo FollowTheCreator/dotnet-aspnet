@@ -1,10 +1,11 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using System.Linq;
 
-namespace test.Models
+namespace PermissionsAttribute.DAL.Models.Contexts
 {
-    public partial class PermissionsDbContext : DbContext
+    public partial class PermissionsDbContext : DbContext, IContext
     {
         public PermissionsDbContext()
         {
@@ -16,18 +17,12 @@ namespace test.Models
         }
 
         public virtual DbSet<Permission> Permission { get; set; }
-        public virtual DbSet<Profile> Profile { get; set; }
-        public virtual DbSet<Role> Role { get; set; }
-        public virtual DbSet<RolePermission> RolePermission { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Data Source=localhost;Initial Catalog=PermissionsDb;Integrated Security=True;");
-            }
-        }
+        public virtual DbSet<Profile> Profile { get; set; }
+
+        public virtual DbSet<Role> Role { get; set; }
+
+        public virtual DbSet<RolePermission> RolePermission { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

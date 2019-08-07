@@ -5,7 +5,9 @@ VisualStudioVersion = 16.0.29102.190
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PermissionsAttribute.WebUI", "PermissionsAttribute.WebUI\PermissionsAttribute.WebUI.csproj", "{9933C012-8C30-4070-A536-D4896F589924}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PermissionsAttribute.DAL", "PermissionsAttribute.DAL\PermissionsAttribute.DAL.csproj", "{C118B8BC-36E5-402C-A4FD-616BB8E3D835}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PermissionsAttribute.DAL", "PermissionsAttribute.DAL\PermissionsAttribute.DAL.csproj", "{C118B8BC-36E5-402C-A4FD-616BB8E3D835}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PermissionsAttribute.BLL", "PermissionsAttribute.BLL\PermissionsAttribute.BLL.csproj", "{3B03DA57-2893-4C30-89E1-25F790CA2D16}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{C118B8BC-36E5-402C-A4FD-616BB8E3D835}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C118B8BC-36E5-402C-A4FD-616BB8E3D835}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C118B8BC-36E5-402C-A4FD-616BB8E3D835}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3B03DA57-2893-4C30-89E1-25F790CA2D16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3B03DA57-2893-4C30-89E1-25F790CA2D16}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3B03DA57-2893-4C30-89E1-25F790CA2D16}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3B03DA57-2893-4C30-89E1-25F790CA2D16}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
