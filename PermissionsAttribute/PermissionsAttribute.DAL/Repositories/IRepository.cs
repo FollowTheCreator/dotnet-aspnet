@@ -11,9 +11,9 @@ namespace PermissionsAttribute.DAL.Repositories
 
         Task<IEnumerable<T>> GetAllAsync();
 
-        Task CreateAsync(T item);
+        Task CreateAsync(T profile);
 
-        Task UpdateAsync(T item);
+        Task UpdateAsync(T profile);
 
         Task DeleteAsync(int id);
     }

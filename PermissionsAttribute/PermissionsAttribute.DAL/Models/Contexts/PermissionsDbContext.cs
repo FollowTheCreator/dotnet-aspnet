@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace PermissionsAttribute.DAL.Models.Contexts
 {
-    public partial class PermissionsDbContext : DbContext, IContext
+    public partial class PermissionsDbContext : DbContext
     {
         public PermissionsDbContext()
         {

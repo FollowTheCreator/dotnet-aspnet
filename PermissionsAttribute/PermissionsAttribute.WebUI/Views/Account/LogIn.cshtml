@@ -1,0 +1,28 @@
+﻿@model PermissionsAttribute.WebUI.Models.ViewModels.LoginModel
+
+<h2>Login</h2>
+
+<form asp-action="LogIn" asp-controller="Account" asp-anti-forgery="true" class="form-group">
+    <div class="validation" asp-validation-summary="ModelOnly"></div>
+    <br>
+    <div>
+        <div>
+            <label asp-for="Email">Email</label><br />
+            <input type="text" asp-for="Email" />
+            <span asp-validation-for="Email"></span>
+        </div>
+        <div>
+            <label asp-for="Password">Password</label><br />
+            <input asp-for="Password" />
+            <span asp-validation-for="Password"></span>
+        </div>
+        <br />
+        <div>
+            <input type="submit" value="Login" class="btn btn-outline-secondary" />
+        </div>
+    </div>
+</form>
+<a asp-action="Register" asp-controller="Account">Register</a>
+<br><br><br>
+Admin (login: 111, pass: 111)<br />
+User (login: 123, pass: 123)

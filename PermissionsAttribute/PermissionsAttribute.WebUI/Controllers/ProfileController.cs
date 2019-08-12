@@ -2,13 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PermissionsAttribute.BLL.Services;
+using PermissionsAttribute.WebUI.Attributes.PermissionAttribute;
 using PermissionsAttribute.WebUI.Models;
+using PermissionsAttribute.WebUI.Models.ViewModels;
 
 namespace PermissionsAttribute.WebUI.Controllers
 {
-    [Route("Profiles")]
     public class ProfileController : Controller
     {
         private readonly IProfileService _service;
@@ -18,39 +20,47 @@ namespace PermissionsAttribute.WebUI.Controllers
             _service = service;
         }
 
-        [Route("")]
-        public async Task<ActionResult<IEnumerable<Profile>>> GetAllProfiles()
+        public async Task<ActionResult<IEnumerable<ProfileViewModel>>> GetAllProfiles()
         {
             var profiles = await _service.GetAllAsync();
 
-            var convertedProfiles = profiles.Select(x => Utils.Convert.To<BLL.Models.Profile, Profile>(x)).ToList();
+            var convertedProfiles = profiles.Select(x => Utils.Convert.To<BLL.Models.BLLProfile, ProfileViewModel>(x)).ToList();
 
-            return convertedProfiles;
+            return View("Views/Profile/Profiles.cshtml", convertedProfiles);
         }
 
-        [Route("{id}")]
-        public async Task<ActionResult<Profile>> GetProfileById(int id)
+        [HasPermission(Permissions.GetProfileById)]
+        public async Task<ActionResult<ProfileViewModel>> GetProfileById(int id)
         {
             var profile = await _service.GetByIdAsync(id);
 
-            var convertedProfile = Utils.Convert.To<BLL.Models.Profile, Profile>(profile);
+            var convertedProfile = Utils.Convert.To<BLL.Models.BLLProfile, ProfileViewModel>(profile);
 
-            return convertedProfile;
+            return View("Views/Profile/Profile.cshtml", convertedProfile);
         }
-        [NonAction]
+
         public async Task<ActionResult<string>> AddProfile(Profile profile)
         {
             return $"Profile (Id: {profile.Id}) was created.";
         }
-        [NonAction]
-        public async Task<ActionResult<string>> UpdateProfile(Profile profile)
+
+        public async Task<ActionResult> UpdateProfile(int id)
         {
-            return $"Profile (Id: {profile.Id}) was updated.";
+            var updateTarget = await _service.GetByIdAsync(id);
+
+            return View("Views/Profile/Update.cshtml");
         }
-        [NonAction]
-        public async Task<ActionResult<string>> DeleteProfile(int id)
+
+        [HasPermission(Permissions.DeleteProfile)]
+        public async Task<ActionResult> DeleteProfile(int id)
         {
-            return $"Profile (Id: {id}) was deleted.";
+            if(id.ToString() == User.Claims.FirstOrDefault(c => c.Type == "id").Value)
+            {
+                return RedirectToAction("GetProfileById", "Profile", new { id = id });
+            }
+            await _service.DeleteAsync(id);
+
+            return RedirectToAction("GetAllProfiles", "Profile");
         }
     }
 }

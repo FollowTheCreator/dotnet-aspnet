@@ -1,0 +1,23 @@
+﻿@model ProfileViewModel
+
+@using PermissionsAttribute.WebUI.Models.ViewModels
+
+
+    <div class="form-group mx-auto w-25">
+        <br>
+        <label for="Id">Id</label>
+        @Html.TextBox("Id", Model.Id, new { id = "Id", @readonly = "readonly", @class = "form-control" })
+        <br>
+        <label for="Name">Name</label>
+        @Html.TextBox("Name", Model.Name, new { id = "Name", @readonly = "readonly", @class = "form-control" })
+        <br>
+        <label for="Email">Email</label>
+        @Html.TextBox("Email", Model.Email, new { id = "Email", @readonly = "readonly", @class = "form-control" })
+        <br>
+        <label for="Role">Role</label>
+        @Html.TextBox("Role", Model.Role, new { id = "Role", @readonly = "readonly", @class = "form-control" })
+        <br>
+        <a asp-controller="Profile" asp-action="UpdateProfile" asp-route-id="@Model.Id" class="text-dark">Update</a>
+        |
+        <a asp-controller="Profile" asp-action="DeleteProfile" asp-route-id="@Model.Id" class="text-dark">Delete</a>
+    </div>

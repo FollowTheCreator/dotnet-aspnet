@@ -8,14 +8,22 @@ namespace PermissionsAttribute.BLL.Services
 {
     public interface IProfileService
     {
-        Task<Profile> GetByIdAsync(int id);
+        Task<BLLProfile> GetByIdAsync(int id);
 
-        Task<IEnumerable<Profile>> GetAllAsync();
+        Task<IEnumerable<BLLProfile>> GetAllAsync();
 
-        Task CreateAsync(Profile item);
+        Task CreateAsync(Profile profile);
 
-        Task UpdateAsync(Profile item);
+        Task UpdateAsync(Profile profile);
 
         Task DeleteAsync(int id);
+
+        Task<bool> IsEmailExistsAsync(string email);
+
+        Task<Profile> RegisterProfileAsync(RegisterModel profile);
+
+        Task<ProfilePermission> GetPermissionsAsync(Profile profile);
+
+        Task<Role> GetRoleByNameAsync(string name);
     }
 }
