@@ -17,7 +17,9 @@
         <label for="Role">Role</label>
         @Html.TextBox("Role", Model.Role, new { id = "Role", @readonly = "readonly", @class = "form-control" })
         <br>
-        <a asp-controller="Profile" asp-action="UpdateProfile" asp-route-id="@Model.Id" class="text-dark">Update</a>
-        |
-        <a asp-controller="Profile" asp-action="DeleteProfile" asp-route-id="@Model.Id" class="text-dark">Delete</a>
+        <div class="text-center">
+            <a asp-controller="Profile" asp-action="UpdateProfile" asp-route-id="@Model.Id" class="text-dark">Update</a>
+            |
+            <a asp-controller="Profile" asp-action="DeleteProfile" asp-route-id="@Model.Id" class="text-dark">Delete</a>
+        </div>
     </div>

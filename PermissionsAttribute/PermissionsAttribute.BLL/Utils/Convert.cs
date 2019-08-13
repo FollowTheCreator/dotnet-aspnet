@@ -56,11 +56,22 @@ namespace PermissionsAttribute.BLL.Utils
             if (typeof(TIn) == typeof(RegisterModel))
             {
                 var data = input as RegisterModel;
-                return new DAL.Models.RegisterModel
+                return new DAL.Models.Profile
                 {
                     Name = data.Name,
                     Email = data.Email,
-                    Password = data.Password
+                    PasswordHash = data.Password
+                } as TOut;
+            }
+
+            if (typeof(TIn) == typeof(AddProfileModel))
+            {
+                var data = input as AddProfileModel;
+                return new DAL.Models.Profile
+                {
+                    Name = data.Name,
+                    Email = data.Email,
+                    PasswordHash = data.Password
                 } as TOut;
             }
 

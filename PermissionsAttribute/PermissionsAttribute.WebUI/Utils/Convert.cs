@@ -62,6 +62,17 @@ namespace PermissionsAttribute.WebUI.Utils
                 } as TOut;
             }
 
+            if (typeof(TIn) == typeof(AddProfileModel))
+            {
+                var data = input as AddProfileModel;
+                return new BLL.Models.AddProfileModel
+                {
+                    Name = data.Name,
+                    Email = data.Email,
+                    Password = data.Password
+                } as TOut;
+            }
+
             if (typeof(TIn) == typeof(DAL.Models.Profile))
             {
                 var data = input as DAL.Models.Profile;

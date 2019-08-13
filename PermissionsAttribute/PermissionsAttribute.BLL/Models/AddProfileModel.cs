@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace PermissionsAttribute.DAL.Models
+namespace PermissionsAttribute.BLL.Models
 {
-    public class RegisterModel
+    public class AddProfileModel
     {
         public string Name { get; set; }
 

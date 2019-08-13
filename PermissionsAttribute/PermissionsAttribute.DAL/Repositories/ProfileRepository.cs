@@ -18,6 +18,8 @@ namespace PermissionsAttribute.DAL.Repositories
 
         public async Task CreateAsync(Profile profile)
         {
+            profile.Role = await GetRoleByNameAsync("user");
+
             _context.Profile.Add(profile);
 
             await _context.SaveChangesAsync();
@@ -65,14 +67,13 @@ namespace PermissionsAttribute.DAL.Repositories
             return user != null;
         }
 
-        public async Task<Profile> RegisterProfileAsync(RegisterModel model)
+        public async Task<Profile> RegisterProfileAsync(Profile profile)
         {
-            Profile user = new Profile { Name = model.Name, Email = model.Email, PasswordHash = model.Password };
-            user.Role = await GetRoleByNameAsync("user");
+            profile.Role = await GetRoleByNameAsync("user");
 
-            await CreateAsync(user);
+            await CreateAsync(profile);
 
-            return user;
+            return profile;
         }
 
         public async Task UpdateAsync(Profile profile)

@@ -10,7 +10,7 @@ namespace PermissionsAttribute.DAL.Repositories
     {
         Task<bool> IsEmailExistsAsync(string email);
 
-        Task<Profile> RegisterProfileAsync(RegisterModel profile);
+        Task<Profile> RegisterProfileAsync(Profile profile);
 
         Task<ProfilePermission> GetPermissionsAsync(Profile profile);
 

@@ -2,38 +2,43 @@
 
 @using PermissionsAttribute.WebUI.Models.ViewModels
 
-<div>
-    <table class="table">
-        <thead class="thead-light">
-            <tr>
-                <th class="text-dark">
-                    Id
-                </th>
-                <th class="text-dark">
-                    Name
-                </th>
-                <th class="text-dark">
-                    Email
-                </th>
-                <th class="text-dark">
-                    Role
-                </th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var profile in Model)
-            {
+    <div>
+        <table class="table">
+            <thead class="thead-light">
                 <tr>
-                    <td>@profile.Id</td>
-                    <td>@profile.Name</td>
-                    <td>@profile.Email</td>
-                    <td>@profile.Role</td>
-                    <td>
-                        @Html.ActionLink("Details", "GetProfileById", "Profile", new { id = profile.Id }, new { @class = "text-dark" })
-                    </td>
+                    <th class="text-dark">
+                        Id
+                    </th>
+                    <th class="text-dark">
+                        Name
+                    </th>
+                    <th class="text-dark">
+                        Email
+                    </th>
+                    <th class="text-dark">
+                        Role
+                    </th>
+                    <th></th>
                 </tr>
-            }
-        </tbody>
-    </table>
-</div>
+            </thead>
+            <tbody>
+                @foreach (var profile in Model)
+                {
+                    <tr>
+                        <td>@profile.Id</td>
+                        <td>@profile.Name</td>
+                        <td>@profile.Email</td>
+                        <td>@profile.Role</td>
+                        <td>
+                            <a asp-controller="Profile" asp-action="GetProfileById" asp-route-id="@profile.Id" class="text-dark">Details</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <div class="text-center">
+            <a asp-controller="Profile" asp-action="AddProfile" class="btn btn-outline-secondary px-3">
+                <h4>+</h4>
+            </a>
+        </div>
+    </div>

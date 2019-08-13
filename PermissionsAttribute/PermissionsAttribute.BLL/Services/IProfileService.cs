@@ -12,7 +12,7 @@ namespace PermissionsAttribute.BLL.Services
 
         Task<IEnumerable<BLLProfile>> GetAllAsync();
 
-        Task CreateAsync(Profile profile);
+        Task CreateAsync(AddProfileModel profile);
 
         Task UpdateAsync(Profile profile);
 

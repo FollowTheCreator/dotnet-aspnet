@@ -35,9 +35,10 @@ namespace PermissionsAttribute.BLL.Services
             return convertedProfiles;
         }
 
-        public async Task CreateAsync(Profile profile)
+        public async Task CreateAsync(AddProfileModel model)
         {
-
+            var convertedModel = Utils.Convert.To<AddProfileModel, DAL.Models.Profile>(model);
+            await _repository.CreateAsync(convertedModel);
         }
 
         public async Task UpdateAsync(Profile profile)
@@ -56,11 +57,9 @@ namespace PermissionsAttribute.BLL.Services
 
         public async Task<Profile> RegisterProfileAsync(RegisterModel profile)
         {
-            var registeredProfile = await _repository.RegisterProfileAsync(Utils.Convert.To<RegisterModel, DAL.Models.RegisterModel>(profile));
+            var registeredProfile = await _repository.RegisterProfileAsync(Utils.Convert.To<RegisterModel, DAL.Models.Profile>(profile));
 
-            var a = Utils.Convert.To<DAL.Models.Profile, Profile>(registeredProfile);
-
-            return a;
+            return Utils.Convert.To<DAL.Models.Profile, Profile>(registeredProfile);
         }
 
         public async Task<ProfilePermission> GetPermissionsAsync(Profile profile)

@@ -26,7 +26,7 @@ namespace PermissionsAttribute.WebUI.Controllers
 
             var convertedProfiles = profiles.Select(x => Utils.Convert.To<BLL.Models.BLLProfile, ProfileViewModel>(x)).ToList();
 
-            return View("Views/Profile/Profiles.cshtml", convertedProfiles);
+            return View("~/Views/Profile/Profiles.cshtml", convertedProfiles);
         }
 
         [HasPermission(Permissions.GetProfileById)]
@@ -36,19 +36,58 @@ namespace PermissionsAttribute.WebUI.Controllers
 
             var convertedProfile = Utils.Convert.To<BLL.Models.BLLProfile, ProfileViewModel>(profile);
 
-            return View("Views/Profile/Profile.cshtml", convertedProfile);
+            return View("~/Views/Profile/Profile.cshtml", convertedProfile);
         }
 
-        public async Task<ActionResult<string>> AddProfile(Profile profile)
+        [HttpGet]
+        [HasPermission(Permissions.AddProfile)]
+        public ActionResult AddProfile()
         {
-            return $"Profile (Id: {profile.Id}) was created.";
+            return View("~/Views/Profile/Add.cshtml");
         }
 
+        [HttpPost]
+        [HasPermission(Permissions.AddProfile)]
+        public async Task<ActionResult<string>> AddProfile(AddProfileModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            if (!await _service.IsEmailExistsAsync(model.Email))
+            {
+                var convertedModel = Utils.Convert.To<AddProfileModel, BLL.Models.AddProfileModel>(model);
+                await _service.CreateAsync(convertedModel);
+
+                return RedirectToAction("GetAllProfiles", "Profile");
+            }
+            else
+            {
+                ModelState.AddModelError("", "This Email already exists");
+            }
+
+            return View(model);
+        }
+
+        [HttpGet]
+        [HasPermission(Permissions.UpdateProfile)]
         public async Task<ActionResult> UpdateProfile(int id)
         {
             var updateTarget = await _service.GetByIdAsync(id);
 
-            return View("Views/Profile/Update.cshtml");
+            return View("~/Views/Profile/Update.cshtml");
+        }
+
+        [HttpPost]
+        [HasPermission(Permissions.UpdateProfile)]
+        public async Task<ActionResult> UpdateProfile(Profile profile)
+        {
+            var convertedProfile = Utils.Convert.To<Profile, BLL.Models.Profile>(profile);
+
+            await _service.UpdateAsync(convertedProfile);
+
+            return View("~/Views/Profile/Update.cshtml");
         }
 
         [HasPermission(Permissions.DeleteProfile)]
