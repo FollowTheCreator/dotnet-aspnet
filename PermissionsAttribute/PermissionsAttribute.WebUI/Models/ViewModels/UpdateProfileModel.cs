@@ -6,8 +6,12 @@ using System.Threading.Tasks;
 
 namespace PermissionsAttribute.WebUI.Models.ViewModels
 {
-    public class RegisterModel
+    public class UpdateProfileModel
     {
+        public int Id { get; set; }
+
+        public string Role { get; set; }
+
         [Required(ErrorMessage = "Name is null")]
         public string Name { get; set; }
 

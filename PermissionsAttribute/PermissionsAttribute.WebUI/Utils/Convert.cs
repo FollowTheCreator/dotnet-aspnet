@@ -1,5 +1,6 @@
 ﻿using PermissionsAttribute.WebUI.Models;
 using PermissionsAttribute.WebUI.Models.ViewModels;
+using PermissionsAttribute.WebUI.Models.ViewModels.Authentication;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,6 +30,30 @@ namespace PermissionsAttribute.WebUI.Utils
                         Role = data.Role.Name
                     } as TOut;
                 }
+                if (typeof(TOut) == typeof(UpdateProfileModel))
+                {
+                    return new UpdateProfileModel
+                    {
+                        Id = data.Id,
+                        Role = data.Role.Name,
+                        Name = data.Name,
+                        Email = data.Email,
+                        Password = data.PasswordHash,
+                    } as TOut;
+                }
+            }
+
+            if (typeof(TIn) == typeof(UpdateProfileModel))
+            {
+                var data = input as UpdateProfileModel;
+                return new BLL.Models.Profile
+                {
+                    Id = data.Id,
+                    Name = data.Name,
+                    Email = data.Email,
+                    PasswordHash = data.Password,
+                    Role = new BLL.Models.Role { Name = data.Role }
+                } as TOut;
             }
 
             if (typeof(TIn) == typeof(BLL.Models.ProfilePermission))

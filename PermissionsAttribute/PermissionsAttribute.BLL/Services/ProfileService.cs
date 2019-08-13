@@ -43,6 +43,18 @@ namespace PermissionsAttribute.BLL.Services
 
         public async Task UpdateAsync(Profile profile)
         {
+            var role = await _repository.GetRoleByNameAsync(profile.Role.Name);
+            profile.RoleId = role.Id;
+
+            if (string.IsNullOrWhiteSpace(profile.PasswordHash))
+            {
+                var oldProfile = await _repository.GetByIdAsync(profile.Id);
+                profile.PasswordHash = oldProfile.PasswordHash;
+            }
+
+            var convertedProfile = Utils.Convert.To<Profile, DAL.Models.Profile>(profile);
+
+            await _repository.UpdateAsync(convertedProfile);
         }
 
         public async Task DeleteAsync(int id)

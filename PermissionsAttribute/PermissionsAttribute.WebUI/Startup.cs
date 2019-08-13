@@ -37,8 +37,10 @@ namespace PermissionsAttribute.WebUI
             });
 
             string connection = Configuration.GetConnectionString("PermissionsDatabase");
-            services.AddDbContext<PermissionsDbContext>(options =>
+            services
+                .AddDbContext<PermissionsDbContext>(options =>
                 options.UseSqlServer(connection));
+                //.AddSingleton<PermissionsDbContext>(options => options.UseSqlServer(connection));
 
             services.AddScoped<IProfileService, ProfileService>();
             services.AddScoped<IProfileRepository, ProfileRepository>();

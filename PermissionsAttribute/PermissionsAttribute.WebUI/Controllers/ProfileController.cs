@@ -52,7 +52,7 @@ namespace PermissionsAttribute.WebUI.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return View(model);
+                return View("~/Views/Profile/Add.cshtml", model);
             }
 
             if (!await _service.IsEmailExistsAsync(model.Email))
@@ -67,27 +67,29 @@ namespace PermissionsAttribute.WebUI.Controllers
                 ModelState.AddModelError("", "This Email already exists");
             }
 
-            return View(model);
+            return View("~/Views/Profile/Add.cshtml", model);
         }
 
         [HttpGet]
         [HasPermission(Permissions.UpdateProfile)]
-        public async Task<ActionResult> UpdateProfile(int id)
+        public async Task<ActionResult<UpdateProfileModel>> UpdateProfile(int id)
         {
-            var updateTarget = await _service.GetByIdAsync(id);
+            var profile = await _service.GetByIdAsync(id);
 
-            return View("~/Views/Profile/Update.cshtml");
+            var convertedProfile = Utils.Convert.To<BLL.Models.BLLProfile, UpdateProfileModel>(profile);
+
+            return View("~/Views/Profile/Update.cshtml", convertedProfile);
         }
 
         [HttpPost]
         [HasPermission(Permissions.UpdateProfile)]
-        public async Task<ActionResult> UpdateProfile(Profile profile)
+        public async Task<ActionResult<Profile>> UpdateProfile(UpdateProfileModel model)
         {
-            var convertedProfile = Utils.Convert.To<Profile, BLL.Models.Profile>(profile);
+            var convertedProfile = Utils.Convert.To<UpdateProfileModel, BLL.Models.Profile>(model);
 
             await _service.UpdateAsync(convertedProfile);
 
-            return View("~/Views/Profile/Update.cshtml");
+            return RedirectToAction("GetProfileById", "Profile", new { id = model.Id });
         }
 
         [HasPermission(Permissions.DeleteProfile)]

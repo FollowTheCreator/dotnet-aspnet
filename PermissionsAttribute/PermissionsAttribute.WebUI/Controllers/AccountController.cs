@@ -11,6 +11,8 @@ using PermissionsAttribute.BLL.Services;
 using PermissionsAttribute.DAL.Models.Contexts;
 using PermissionsAttribute.WebUI.Models;
 using PermissionsAttribute.WebUI.Models.ViewModels;
+using PermissionsAttribute.WebUI.Models.ViewModels.Authentication;
+using PermissionsAttribute.WebUI.Models.ViewModels.Errors;
 
 namespace PermissionsAttribute.WebUI.Controllers
 {
@@ -91,7 +93,7 @@ namespace PermissionsAttribute.WebUI.Controllers
 
             var convertedPermission = Utils.Convert.To<BLL.Models.ProfilePermission, ProfilePermission>(permission);
 
-            if (permission.PermissionNames.Count() != 0)
+            if (permission.PermissionNames.Any())
             {
                 await Authenticate(convertedPermission, model.Email);
 
