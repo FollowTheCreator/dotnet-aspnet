@@ -1,7 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
-using System.Linq;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace PermissionsAttribute.DAL.Models.Contexts
 {
@@ -17,11 +14,8 @@ namespace PermissionsAttribute.DAL.Models.Contexts
         }
 
         public virtual DbSet<Permission> Permission { get; set; }
-
         public virtual DbSet<Profile> Profile { get; set; }
-
         public virtual DbSet<Role> Role { get; set; }
-
         public virtual DbSet<RolePermission> RolePermission { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -1,10 +1,8 @@
 ﻿using PermissionsAttribute.BLL.Models;
-using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
-namespace PermissionsAttribute.BLL.Services
+namespace PermissionsAttribute.BLL.Services.ProfileService
 {
     public interface IProfileService
     {
@@ -20,10 +18,10 @@ namespace PermissionsAttribute.BLL.Services
 
         Task<bool> IsEmailExistsAsync(string email);
 
-        Task<Profile> RegisterProfileAsync(RegisterModel profile);
-
         Task<ProfilePermission> GetPermissionsAsync(Profile profile);
 
-        Task<Role> GetRoleByNameAsync(string name);
+        Task<bool> AddProfileAsync(AddProfileModel profile);
+
+        bool IsCurrentUser(int id);
     }
 }

@@ -1,10 +1,7 @@
 ﻿using PermissionsAttribute.WebUI.Models;
 using PermissionsAttribute.WebUI.Models.ViewModels;
 using PermissionsAttribute.WebUI.Models.ViewModels.Authentication;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace PermissionsAttribute.WebUI.Utils
 {

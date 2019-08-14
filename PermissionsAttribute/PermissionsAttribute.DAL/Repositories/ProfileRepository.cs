@@ -14,13 +14,10 @@ namespace PermissionsAttribute.DAL.Repositories
         public ProfileRepository(PermissionsDbContext context)
         {
             _context = context;
-            _context.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
         }
 
         public async Task CreateAsync(Profile profile)
         {
-            profile.Role = await GetRoleByNameAsync("user");
-
             _context.Profile.Add(profile);
 
             await _context.SaveChangesAsync();
@@ -46,6 +43,7 @@ namespace PermissionsAttribute.DAL.Repositories
                 .Profile
                 .Where(x => x.Id == id)
                 .Include(profile => profile.Role)
+                .AsNoTracking()
                 .FirstOrDefaultAsync();
         }
 
@@ -57,6 +55,11 @@ namespace PermissionsAttribute.DAL.Repositories
                         p.Email == profile.Email &&
                         p.PasswordHash == profile.PasswordHash
                     );
+
+            if (currentProfile == null)
+            {
+                return default;
+            }
 
             var permissionNames = await _context
                 .RolePermission
@@ -82,8 +85,6 @@ namespace PermissionsAttribute.DAL.Repositories
 
         public async Task<Profile> RegisterProfileAsync(Profile profile)
         {
-            profile.Role = await GetRoleByNameAsync("user");
-
             await CreateAsync(profile);
 
             return profile;

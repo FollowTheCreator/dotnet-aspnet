@@ -1,28 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using PermissionsAttribute.BLL.Services;
-using PermissionsAttribute.DAL.Models.Contexts;
+using PermissionsAttribute.BLL.Services.AccountService;
 using PermissionsAttribute.WebUI.Models;
-using PermissionsAttribute.WebUI.Models.ViewModels;
 using PermissionsAttribute.WebUI.Models.ViewModels.Authentication;
 using PermissionsAttribute.WebUI.Models.ViewModels.Errors;
+using Utils;
 
 namespace PermissionsAttribute.WebUI.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly IProfileService _service;
+        private readonly IAccountService _service;
 
-        public AccountController(IProfileService service)
+        public AccountController(IAccountService accService)
         {
-            _service = service;
+            _service = accService;
         }
 
         public ActionResult Error()
@@ -30,7 +27,7 @@ namespace PermissionsAttribute.WebUI.Controllers
             var permissions = new ErrorModel();
             foreach(var claim in User.Claims)
             {
-                if(claim.Type != "email" && claim.Type != "id")
+                if(claim.Type == ClaimsIdentity.DefaultRoleClaimType)
                 {
                     permissions.Permissions.Add(claim.Value);
                 }
@@ -54,23 +51,19 @@ namespace PermissionsAttribute.WebUI.Controllers
                 return View(model);
             }
 
-            if (!await _service.IsEmailExistsAsync(model.Email))
+            var convertedProfile = Utils.Convert.To<RegisterModel, BLL.Models.RegisterModel>(model);
+            var registeredProfilePermissions = await _service.RegisterProfileAsync(convertedProfile);
+
+            if (registeredProfilePermissions != null)
             {
-                var registeredProfile = await _service.RegisterProfileAsync(Utils.Convert.To<RegisterModel, BLL.Models.RegisterModel>(model));
-
-                var permission = await _service.GetPermissionsAsync(registeredProfile);
-
-                var convertedPermission = Utils.Convert.To<BLL.Models.ProfilePermission, ProfilePermission>(permission);
+                var convertedPermission = Utils.Convert.To<BLL.Models.ProfilePermission, ProfilePermission>(registeredProfilePermissions);
 
                 await Authenticate(convertedPermission, model.Email);
 
                 return RedirectToAction("GetAllProfiles", "Profile");
             }
-            else
-            {
-                ModelState.AddModelError("", "This Email already exists");
-            }
 
+            ModelState.AddModelError("", "This Email already exists");
             return View(model);
         }
 
@@ -89,18 +82,18 @@ namespace PermissionsAttribute.WebUI.Controllers
                 return View(model);
             }
 
-            var permission = await _service.GetPermissionsAsync(Utils.Convert.To<LoginModel, BLL.Models.Profile>(model));
+            var permission = await _service.LogIn(Utils.Convert.To<LoginModel, BLL.Models.Profile>(model));
 
             var convertedPermission = Utils.Convert.To<BLL.Models.ProfilePermission, ProfilePermission>(permission);
 
-            if (permission.PermissionNames.Any())
+            if (convertedPermission != null && convertedPermission.PermissionNames.Any())
             {
                 await Authenticate(convertedPermission, model.Email);
 
                 return RedirectToAction("GetAllProfiles", "Profile");
             }
-            ModelState.AddModelError("", "Incorrect Login or/and Password");
 
+            ModelState.AddModelError("", "Incorrect Login or/and Password");
             return View(model);
         }
 

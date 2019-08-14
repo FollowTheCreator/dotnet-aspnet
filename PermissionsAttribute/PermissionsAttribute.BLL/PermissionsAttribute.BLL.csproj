@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\PermissionsAttribute.DAL\PermissionsAttribute.DAL.csproj" />
+    <ProjectReference Include="..\Utils\Utils.csproj" />
   </ItemGroup>
 
 </Project>

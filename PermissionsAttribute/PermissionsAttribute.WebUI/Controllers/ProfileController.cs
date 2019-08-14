@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PermissionsAttribute.BLL.Services;
+using PermissionsAttribute.BLL.Services.ProfileService;
 using PermissionsAttribute.WebUI.Attributes.PermissionAttribute;
 using PermissionsAttribute.WebUI.Models;
 using PermissionsAttribute.WebUI.Models.ViewModels;
@@ -55,18 +53,13 @@ namespace PermissionsAttribute.WebUI.Controllers
                 return View("~/Views/Profile/Add.cshtml", model);
             }
 
-            if (!await _service.IsEmailExistsAsync(model.Email))
+            var convertedModel = Utils.Convert.To<AddProfileModel, BLL.Models.AddProfileModel>(model);
+            if (await _service.AddProfileAsync(convertedModel))
             {
-                var convertedModel = Utils.Convert.To<AddProfileModel, BLL.Models.AddProfileModel>(model);
-                await _service.CreateAsync(convertedModel);
-
                 return RedirectToAction("GetAllProfiles", "Profile");
             }
-            else
-            {
-                ModelState.AddModelError("", "This Email already exists");
-            }
 
+            ModelState.AddModelError("", "This Email already exists");
             return View("~/Views/Profile/Add.cshtml", model);
         }
 
@@ -95,12 +88,12 @@ namespace PermissionsAttribute.WebUI.Controllers
         [HasPermission(Permissions.DeleteProfile)]
         public async Task<ActionResult> DeleteProfile(int id)
         {
-            if(id.ToString() == User.Claims.FirstOrDefault(c => c.Type == "id").Value)
+            if (_service.IsCurrentUser(id))
             {
                 return RedirectToAction("GetProfileById", "Profile", new { id = id });
             }
-            await _service.DeleteAsync(id);
 
+            await _service.DeleteAsync(id);
             return RedirectToAction("GetAllProfiles", "Profile");
         }
     }

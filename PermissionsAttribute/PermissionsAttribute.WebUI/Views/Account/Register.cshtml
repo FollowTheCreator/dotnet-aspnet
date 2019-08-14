@@ -1,35 +1,39 @@
 ﻿@model PermissionsAttribute.WebUI.Models.ViewModels.Authentication.RegisterModel
 
-<h2>Registration</h2>
-
-<form asp-action="Register" asp-controller="Account" asp-anti-forgery="true" class="form-group">
+<div class="mt-3">
+    <h2>Registration</h2>
+</div>
+<form asp-action="Register" asp-controller="Account" asp-anti-forgery="true" class="form-group mx-auto w-25">
     <div class="validation" asp-validation-summary="ModelOnly"></div>
     <br>
     <div>
         <div>
             <label asp-for="Name">Name</label><br />
-            <input type="text" asp-for="Name" />
+            <input type="text" asp-for="Name" class="form-control" />
             <span asp-validation-for="Name"></span>
         </div>
+        <br>
         <div>
             <label asp-for="Email">Email</label><br />
-            <input type="text" asp-for="Email" />
+            <input type="text" asp-for="Email" class="form-control" />
             <span asp-validation-for="Email"></span>
         </div>
+        <br>
         <div>
             <label asp-for="Password">Password</label><br />
-            <input asp-for="Password" />
+            <input asp-for="Password" class="form-control" />
             <span asp-validation-for="Password"></span>
         </div>
+        <br>
         <div>
             <label asp-for="ConfirmPassword">Confirm Password</label><br />
-            <input asp-for="ConfirmPassword" />
+            <input asp-for="ConfirmPassword" class="form-control" />
             <span asp-validation-for="ConfirmPassword"></span>
         </div>
         <br />
         <div>
-            <input type="submit" value="Register" class="btn btn-outline-secondary" />
+            <input type="submit" value="Register" class="btn btn-outline-secondary w-100 mt-5" />
         </div>
+        <a asp-action="LogIn" asp-controller="Account">Log In</a>
     </div>
 </form>
-<a asp-action="LogIn" asp-controller="Account">Log In</a>

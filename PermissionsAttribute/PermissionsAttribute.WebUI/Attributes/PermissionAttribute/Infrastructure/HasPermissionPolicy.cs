@@ -2,8 +2,6 @@
 using Microsoft.Extensions.Options;
 using PermissionsAttribute.WebUI.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace PermissionsAttribute.WebUI.Attributes.PermissionAttribute.Infrastructure

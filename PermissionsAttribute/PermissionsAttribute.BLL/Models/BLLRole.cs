@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace PermissionsAttribute.BLL.Models
+﻿namespace PermissionsAttribute.BLL.Models
 {
     public class BLLRole
     {

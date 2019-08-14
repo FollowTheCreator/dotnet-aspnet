@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace PermissionsAttribute.BLL.Models
+﻿namespace PermissionsAttribute.BLL.Models
 {
     public partial class Profile
     {

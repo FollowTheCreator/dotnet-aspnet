@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authentication.Cookies;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -11,8 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using PermissionsAttribute.BLL.Services;
-using PermissionsAttribute.DAL.Models;
+using PermissionsAttribute.BLL.Services.AccountService;
+using PermissionsAttribute.BLL.Services.ProfileService;
 using PermissionsAttribute.DAL.Models.Contexts;
 using PermissionsAttribute.DAL.Repositories;
 using PermissionsAttribute.WebUI.Attributes.PermissionAttribute.Infrastructure;
@@ -40,9 +36,11 @@ namespace PermissionsAttribute.WebUI
             services
                 .AddDbContext<PermissionsDbContext>(options =>
                 options.UseSqlServer(connection));
-                //.AddSingleton<PermissionsDbContext>(options => options.UseSqlServer(connection));
+
+            services.AddHttpContextAccessor();
 
             services.AddScoped<IProfileService, ProfileService>();
+            services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<IProfileRepository, ProfileRepository>();
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
