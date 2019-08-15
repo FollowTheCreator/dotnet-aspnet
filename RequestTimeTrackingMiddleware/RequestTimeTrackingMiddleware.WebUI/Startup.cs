@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using RequestTimeTrackingMiddleware.BLL.Services.ProfileService;
 using RequestTimeTrackingMiddleware.DAL.Models.Contexts;
 using RequestTimeTrackingMiddleware.DAL.Repositories.ProfileRepository;
+using RequestTimeTrackingMiddleware.WebUI.Utils.TimeTracking;
 
 namespace RequestTimeTrackingMiddleware.WebUI
 {
@@ -46,6 +47,8 @@ namespace RequestTimeTrackingMiddleware.WebUI
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseMiddleware<TimeTrackingMiddleware>();
 
             app.UseStaticFiles();
             app.UseCookiePolicy();
