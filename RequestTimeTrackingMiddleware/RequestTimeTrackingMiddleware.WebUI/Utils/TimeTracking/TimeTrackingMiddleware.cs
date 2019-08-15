@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
+﻿using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using NLog;
 
 namespace RequestTimeTrackingMiddleware.WebUI.Utils.TimeTracking
 {
@@ -20,9 +18,13 @@ namespace RequestTimeTrackingMiddleware.WebUI.Utils.TimeTracking
         {
             var sw = new Stopwatch();
             sw.Start();
+
             await _next.Invoke(context);
+
             sw.Stop();
-            await context.Response.WriteAsync($"{sw.ElapsedMilliseconds} ms");
+
+            Logger Logger = LogManager.GetCurrentClassLogger();
+            Logger.Info($"{sw.ElapsedMilliseconds} ms");
         }
     }
 }
