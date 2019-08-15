@@ -1,4 +1,6 @@
-﻿namespace PermissionsAttribute.BLL.Models
+﻿using PermissionsAttribute.BLL.Models.RoleModels;
+
+namespace PermissionsAttribute.BLL.Models
 {
     public partial class RolePermission
     {

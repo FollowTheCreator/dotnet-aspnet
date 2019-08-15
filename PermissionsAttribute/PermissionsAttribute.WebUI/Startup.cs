@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using PermissionsAttribute.BLL.Services.AccountService;
+using PermissionsAttribute.BLL.Services.ClaimService;
 using PermissionsAttribute.BLL.Services.ProfileService;
 using PermissionsAttribute.DAL.Models.Contexts;
 using PermissionsAttribute.DAL.Repositories;
@@ -41,6 +42,8 @@ namespace PermissionsAttribute.WebUI
 
             services.AddScoped<IProfileService, ProfileService>();
             services.AddScoped<IAccountService, AccountService>();
+            services.AddScoped<IClaimService, ClaimService>();
+
             services.AddScoped<IProfileRepository, ProfileRepository>();
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

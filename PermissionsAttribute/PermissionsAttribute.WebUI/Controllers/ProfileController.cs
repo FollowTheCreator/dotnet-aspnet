@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using PermissionsAttribute.BLL.Services.ClaimService;
 using PermissionsAttribute.BLL.Services.ProfileService;
 using PermissionsAttribute.WebUI.Attributes.PermissionAttribute;
 using PermissionsAttribute.WebUI.Models;
@@ -11,18 +11,21 @@ namespace PermissionsAttribute.WebUI.Controllers
 {
     public class ProfileController : Controller
     {
-        private readonly IProfileService _service;
+        private readonly IProfileService _profileService;
 
-        public ProfileController(IProfileService service)
+        private readonly IClaimService _claimService;
+
+        public ProfileController(IProfileService profileService, IClaimService claimService)
         {
-            _service = service;
+            _profileService = profileService;
+            _claimService = claimService;
         }
 
         public async Task<ActionResult<IEnumerable<ProfileViewModel>>> GetAllProfiles()
         {
-            var profiles = await _service.GetAllAsync();
+            var profiles = await _profileService.GetAllAsync();
 
-            var convertedProfiles = profiles.Select(x => Utils.Convert.To<BLL.Models.BLLProfile, ProfileViewModel>(x)).ToList();
+            var convertedProfiles = Utils.Convert.To<BLL.Models.ProfileModels.BLLProfile, ProfileViewModel>(profiles);
 
             return View("~/Views/Profile/Profiles.cshtml", convertedProfiles);
         }
@@ -30,9 +33,9 @@ namespace PermissionsAttribute.WebUI.Controllers
         [HasPermission(Permissions.GetProfileById)]
         public async Task<ActionResult<ProfileViewModel>> GetProfileById(int id)
         {
-            var profile = await _service.GetByIdAsync(id);
+            var profile = await _profileService.GetByIdAsync(id);
 
-            var convertedProfile = Utils.Convert.To<BLL.Models.BLLProfile, ProfileViewModel>(profile);
+            var convertedProfile = Utils.Convert.To<BLL.Models.ProfileModels.BLLProfile, ProfileViewModel>(profile);
 
             return View("~/Views/Profile/Profile.cshtml", convertedProfile);
         }
@@ -53,8 +56,8 @@ namespace PermissionsAttribute.WebUI.Controllers
                 return View("~/Views/Profile/Add.cshtml", model);
             }
 
-            var convertedModel = Utils.Convert.To<AddProfileModel, BLL.Models.AddProfileModel>(model);
-            if (await _service.AddProfileAsync(convertedModel))
+            var convertedModel = Utils.Convert.To<AddProfileModel, BLL.Models.ProfileModels.AddProfileModel>(model);
+            if (await _profileService.AddProfileAsync(convertedModel))
             {
                 return RedirectToAction("GetAllProfiles", "Profile");
             }
@@ -67,9 +70,9 @@ namespace PermissionsAttribute.WebUI.Controllers
         [HasPermission(Permissions.UpdateProfile)]
         public async Task<ActionResult<UpdateProfileModel>> UpdateProfile(int id)
         {
-            var profile = await _service.GetByIdAsync(id);
+            var profile = await _profileService.GetByIdAsync(id);
 
-            var convertedProfile = Utils.Convert.To<BLL.Models.BLLProfile, UpdateProfileModel>(profile);
+            var convertedProfile = Utils.Convert.To<BLL.Models.ProfileModels.BLLProfile, UpdateProfileModel>(profile);
 
             return View("~/Views/Profile/Update.cshtml", convertedProfile);
         }
@@ -78,9 +81,9 @@ namespace PermissionsAttribute.WebUI.Controllers
         [HasPermission(Permissions.UpdateProfile)]
         public async Task<ActionResult<Profile>> UpdateProfile(UpdateProfileModel model)
         {
-            var convertedProfile = Utils.Convert.To<UpdateProfileModel, BLL.Models.Profile>(model);
+            var convertedModel = Utils.Convert.To<UpdateProfileModel, BLL.Models.ProfileModels.UpdateProfileModel>(model);
 
-            await _service.UpdateAsync(convertedProfile);
+            await _profileService.UpdateAsync(convertedModel);
 
             return RedirectToAction("GetProfileById", "Profile", new { id = model.Id });
         }
@@ -88,12 +91,12 @@ namespace PermissionsAttribute.WebUI.Controllers
         [HasPermission(Permissions.DeleteProfile)]
         public async Task<ActionResult> DeleteProfile(int id)
         {
-            if (_service.IsCurrentUser(id))
+            if (_claimService.IsCurrentUser(id))
             {
                 return RedirectToAction("GetProfileById", "Profile", new { id = id });
             }
 
-            await _service.DeleteAsync(id);
+            await _profileService.DeleteAsync(id);
             return RedirectToAction("GetAllProfiles", "Profile");
         }
     }

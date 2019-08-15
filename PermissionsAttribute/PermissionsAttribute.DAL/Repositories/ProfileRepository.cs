@@ -47,30 +47,30 @@ namespace PermissionsAttribute.DAL.Repositories
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<ProfilePermission> GetPermissionsAsync(Profile profile)
+        public async Task<Profile> GetCurrentProfile(Profile profile)
         {
             var currentProfile = await _context
-                    .Profile
-                    .FirstOrDefaultAsync(p =>
-                        p.Email == profile.Email &&
-                        p.PasswordHash == profile.PasswordHash
-                    );
+                .Profile
+                .FirstOrDefaultAsync(p =>
+                    p.Email == profile.Email &&
+                    p.PasswordHash == profile.PasswordHash
+                );
 
-            if (currentProfile == null)
-            {
-                return default;
-            }
+            return currentProfile;
+        }
 
+        public async Task<ProfilePermission> GetPermissionsAsync(Profile profile)
+        {
             var permissionNames = await _context
                 .RolePermission
-                .Where(rp => rp.RoleId == currentProfile.RoleId)
+                .Where(rp => rp.RoleId == profile.RoleId)
                 .Select(rp => rp.Permission.Name)
                 .ToListAsync();
 
             return new ProfilePermission()
             {
                 PermissionNames = permissionNames,
-                Id = currentProfile.Id
+                Id = profile.Id
             };
         }
 
@@ -81,13 +81,6 @@ namespace PermissionsAttribute.DAL.Repositories
                 .FirstOrDefaultAsync(u => u.Email == email);
 
             return user != null;
-        }
-
-        public async Task<Profile> RegisterProfileAsync(Profile profile)
-        {
-            await CreateAsync(profile);
-
-            return profile;
         }
 
         public async Task UpdateAsync(Profile profile)

@@ -1,4 +1,6 @@
-﻿using PermissionsAttribute.BLL.Models;
+﻿using Microsoft.Extensions.Configuration;
+using PermissionsAttribute.BLL.Models.Authentication;
+using PermissionsAttribute.BLL.Models.ProfileModels;
 using PermissionsAttribute.DAL.Repositories;
 using System.Threading.Tasks;
 using Utils;
@@ -7,39 +9,53 @@ namespace PermissionsAttribute.BLL.Services.AccountService
 {
     public class AccountService : IAccountService
     {
+        private readonly IConfiguration _config;
+
         private readonly IProfileRepository _repository;
 
-        public AccountService(IProfileRepository repository)
+        public AccountService(IProfileRepository repository, IConfiguration config)
         {
             _repository = repository;
+            _config = config;
         }
 
         public async Task<ProfilePermission> GetPermissionsAsync(Profile profile)
         {
-            var profilePermission = await _repository.GetPermissionsAsync(Utils.Convert.To<Profile, DAL.Models.Profile>(profile));
+            var currentProfile = await _repository.GetCurrentProfile(Utils.Convert.To<Profile, DAL.Models.Profile>(profile));
+            if (currentProfile == null)
+            {
+                return default;
+            }
+
+            var profilePermission = await _repository.GetPermissionsAsync(currentProfile);
 
             return Utils.Convert.To<DAL.Models.ProfilePermission, ProfilePermission>(profilePermission);
         }
 
-        public async Task<ProfilePermission> LogIn(Profile profile)
+        public async Task<ProfilePermission> LogIn(LoginModel model)
         {
-            profile.PasswordHash = Base64Coder.ComputeSha256Hash(profile.PasswordHash);
+            model.Password = Coder.Encode(model.Password);
 
-            var permission = await GetPermissionsAsync(profile);
+            var profile = Utils.Convert.To<LoginModel, Profile>(model);
 
-            return permission;
+            return await GetPermissionsAsync(profile);
         }
 
         public async Task<ProfilePermission> RegisterProfileAsync(RegisterModel model)
         {
             if (!await IsEmailExistsAsync(model.Email))
             {
+                model.Password = Coder.Encode(model.Password);
+
                 var convertedModel = Utils.Convert.To<RegisterModel, DAL.Models.Profile>(model);
 
-                convertedModel.Role = await _repository.GetRoleByNameAsync("user");
-                convertedModel.PasswordHash = Base64Coder.ComputeSha256Hash(convertedModel.PasswordHash);
+                convertedModel.Role = await _repository.GetRoleByNameAsync(
+                    _config.GetSection("AppSettings:DefaultUserRole").Value
+                );
 
-                var registeredProfile = await _repository.RegisterProfileAsync(convertedModel);
+                await _repository.CreateAsync(convertedModel);
+
+                var registeredProfile = await _repository.GetByIdAsync(convertedModel.Id);
 
                 var convertedProfile = Utils.Convert.To<DAL.Models.Profile, Profile>(registeredProfile);
 

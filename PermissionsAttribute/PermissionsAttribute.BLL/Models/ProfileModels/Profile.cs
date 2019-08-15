@@ -1,6 +1,8 @@
-﻿namespace PermissionsAttribute.BLL.Models
+﻿using PermissionsAttribute.BLL.Models.RoleModels;
+
+namespace PermissionsAttribute.BLL.Models.ProfileModels
 {
-    public class BLLProfile
+    public partial class Profile
     {
         public int Id { get; set; }
 
@@ -12,6 +14,6 @@
 
         public int? RoleId { get; set; }
 
-        public BLLRole Role { get; set; }
+        public Role Role { get; set; }
     }
 }

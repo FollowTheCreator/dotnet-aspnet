@@ -1,4 +1,4 @@
-﻿using PermissionsAttribute.BLL.Models;
+﻿using PermissionsAttribute.BLL.Models.ProfileModels;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -12,16 +12,12 @@ namespace PermissionsAttribute.BLL.Services.ProfileService
 
         Task CreateAsync(AddProfileModel profile);
 
-        Task UpdateAsync(Profile profile);
+        Task UpdateAsync(UpdateProfileModel profile);
 
         Task DeleteAsync(int id);
 
         Task<bool> IsEmailExistsAsync(string email);
 
-        Task<ProfilePermission> GetPermissionsAsync(Profile profile);
-
         Task<bool> AddProfileAsync(AddProfileModel profile);
-
-        bool IsCurrentUser(int id);
     }
 }

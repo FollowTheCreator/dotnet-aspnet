@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
-using PermissionsAttribute.BLL.Models;
+﻿using Microsoft.Extensions.Configuration;
+using PermissionsAttribute.BLL.Models.ProfileModels;
 using PermissionsAttribute.DAL.Repositories;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,14 +10,14 @@ namespace PermissionsAttribute.BLL.Services.ProfileService
 {
     public class ProfileService : IProfileService
     {
+        private readonly IConfiguration _config;
+
         private readonly IProfileRepository _repository;
 
-        private readonly IHttpContextAccessor _httpContextAccessor;
-
-        public ProfileService(IProfileRepository repository, IHttpContextAccessor httpContextAccessor)
+        public ProfileService(IProfileRepository repository, IConfiguration config)
         {
             _repository = repository;
-            _httpContextAccessor = httpContextAccessor;
+            _config = config;
         }
 
         public async Task<BLLProfile> GetByIdAsync(int id)
@@ -41,7 +41,9 @@ namespace PermissionsAttribute.BLL.Services.ProfileService
         public async Task CreateAsync(AddProfileModel model)
         {
             var convertedModel = Utils.Convert.To<AddProfileModel, DAL.Models.Profile>(model);
-            convertedModel.Role = await _repository.GetRoleByNameAsync("user");
+            convertedModel.Role = await _repository.GetRoleByNameAsync(
+                _config.GetSection("AppSettings:DefaultUserRole").Value
+            );
 
             await _repository.CreateAsync(convertedModel);
         }
@@ -50,7 +52,7 @@ namespace PermissionsAttribute.BLL.Services.ProfileService
         {
             if (!await IsEmailExistsAsync(model.Email))
             {
-                model.Password = Base64Coder.ComputeSha256Hash(model.Password);
+                model.Password = Coder.Encode(model.Password);
 
                 await CreateAsync(model);
 
@@ -60,17 +62,22 @@ namespace PermissionsAttribute.BLL.Services.ProfileService
             return false;
         }
 
-        public async Task UpdateAsync(Profile profile)
+        public async Task UpdateAsync(UpdateProfileModel model)
         {
+            if (string.IsNullOrWhiteSpace(model.Password))
+            {
+                var oldProfile = await _repository.GetByIdAsync(model.Id);
+                model.Password = oldProfile.PasswordHash;
+            }
+            else
+            {
+                model.Password = Coder.Encode(model.Password);
+            }
+
+            var profile = Utils.Convert.To<UpdateProfileModel, Profile>(model);
+
             var role = await _repository.GetRoleByNameAsync(profile.Role.Name);
             profile.RoleId = role.Id;
-
-            if (string.IsNullOrWhiteSpace(profile.PasswordHash))
-            {
-                var oldProfile = await _repository.GetByIdAsync(profile.Id);
-                profile.PasswordHash = oldProfile.PasswordHash;
-            }
-            profile.PasswordHash = Base64Coder.ComputeSha256Hash(profile.PasswordHash);
 
             var convertedProfile = Utils.Convert.To<Profile, DAL.Models.Profile>(profile);
 
@@ -85,30 +92,6 @@ namespace PermissionsAttribute.BLL.Services.ProfileService
         public async Task<bool> IsEmailExistsAsync(string email)
         {
             return await _repository.IsEmailExistsAsync(email);
-        }
-
-        public async Task<ProfilePermission> GetPermissionsAsync(Profile profile)
-        {
-            var profilePermission = await _repository.GetPermissionsAsync(Utils.Convert.To<Profile, DAL.Models.Profile>(profile));
-
-            return Utils.Convert.To<DAL.Models.ProfilePermission, ProfilePermission>(profilePermission);
-        }
-
-        public bool IsCurrentUser(int id)
-        {
-            var currentId = _httpContextAccessor
-                .HttpContext
-                .User
-                .Claims
-                .FirstOrDefault(c => c.Type == "id")
-                .Value;
-
-            if (id.ToString() == currentId)
-            {
-                return true;
-            }
-
-            return false;
         }
     }
 }

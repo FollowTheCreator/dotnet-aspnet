@@ -1,222 +1,145 @@
 ﻿using PermissionsAttribute.WebUI.Models;
 using PermissionsAttribute.WebUI.Models.ViewModels;
 using PermissionsAttribute.WebUI.Models.ViewModels.Authentication;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace PermissionsAttribute.WebUI.Utils
 {
-    class Convert
+    static class Convert
     {
+        private static readonly Dictionary<TypeKey, Func<object, object>> _converters = new Dictionary<TypeKey, Func<object, object>>
+        {
+            { new TypeKey { TIn = typeof(BLL.Models.ProfileModels.BLLProfile), TOut = typeof(ProfileViewModel) }, BLLBllProfileToProfileViewModel },
+            { new TypeKey { TIn = typeof(BLL.Models.ProfileModels.BLLProfile), TOut = typeof(UpdateProfileModel) }, BLLBllProfileToUpdateProfileModel },
+            { new TypeKey { TIn = typeof(UpdateProfileModel), TOut = typeof(BLL.Models.ProfileModels.UpdateProfileModel) }, UpdateProfileModelToBLLUpdateProfileModel },
+            { new TypeKey { TIn = typeof(BLL.Models.ProfileModels.ProfilePermission), TOut = typeof(ProfilePermission) }, BLLProfilePermissionToProfilePermission },
+            { new TypeKey { TIn = typeof(LoginModel), TOut = typeof(BLL.Models.Authentication.LoginModel) }, LoginModelToBLLLoginModel },
+            { new TypeKey { TIn = typeof(RegisterModel), TOut = typeof(BLL.Models.Authentication.RegisterModel) }, RegisterModelToBLLRegisterModel },
+            { new TypeKey { TIn = typeof(AddProfileModel), TOut = typeof(BLL.Models.ProfileModels.AddProfileModel) }, AddProfileModelToBLLAddProfileModel }
+        };
+
+        private class TypeKey
+        {
+            public Type TIn { get; set; }
+
+            public Type TOut { get; set; }
+
+            public override bool Equals(object obj)
+            {
+                if ((obj == null) || !this.GetType().Equals(obj.GetType()))
+                {
+                    return false;
+                }
+                else
+                {
+                    TypeKey tk = (TypeKey)obj;
+                    return (TIn == tk.TIn) && (tk.TOut == TOut);
+                }
+            }
+
+            public override int GetHashCode()
+            {
+                return (TIn.GetHashCode() << 2) ^ TOut.GetHashCode();
+            }
+        }
+
+        private static object BLLBllProfileToProfileViewModel(object input)
+        {
+            var data = input as BLL.Models.ProfileModels.BLLProfile;
+            return new ProfileViewModel
+            {
+                Id = data.Id,
+                Name = data.Name,
+                Email = data.Email,
+                Role = data.Role.Name
+            };
+        }
+
+        private static object BLLBllProfileToUpdateProfileModel(object input)
+        {
+            var data = input as BLL.Models.ProfileModels.BLLProfile;
+            return new UpdateProfileModel
+            {
+                Id = data.Id,
+                Role = data.Role.Name,
+                Name = data.Name,
+                Email = data.Email,
+                Password = data.PasswordHash,
+            };
+        }
+
+        private static object UpdateProfileModelToBLLUpdateProfileModel(object input)
+        {
+            var data = input as UpdateProfileModel;
+            return new BLL.Models.ProfileModels.UpdateProfileModel
+            {
+                Id = data.Id,
+                Name = data.Name,
+                Email = data.Email,
+                Password = data.Password,
+                Role = data.Role
+            };
+        }
+
+        private static object BLLProfilePermissionToProfilePermission(object input)
+        {
+            var data = input as BLL.Models.ProfileModels.ProfilePermission;
+            return new ProfilePermission
+            {
+                PermissionNames = data.PermissionNames,
+                Id = data.Id
+            };
+        }
+
+        private static object LoginModelToBLLLoginModel(object input)
+        {
+            var data = input as LoginModel;
+            return new BLL.Models.Authentication.LoginModel
+            {
+                Password = data.Password,
+                Email = data.Email
+            };
+        }
+
+        private static object RegisterModelToBLLRegisterModel(object input)
+        {
+            var data = input as RegisterModel;
+            return new BLL.Models.Authentication.RegisterModel
+            {
+                Name = data.Name,
+                Email = data.Email,
+                Password = data.Password
+            };
+        }
+
+        private static object AddProfileModelToBLLAddProfileModel(object input)
+        {
+            var data = input as AddProfileModel;
+            return new BLL.Models.ProfileModels.AddProfileModel
+            {
+                Name = data.Name,
+                Email = data.Email,
+                Password = data.Password
+            };
+        }
+
+        public static IEnumerable<TOut> To<TIn, TOut>(IEnumerable<TIn> input) where TOut : class
+        {
+            return input.Select(i => To<TIn, TOut>(i));
+        }
+
         public static TOut To<TIn, TOut>(TIn input) where TOut : class
         {
-            if(input == null)
+            if (input == null)
             {
                 return default;
             }
 
-            if (typeof(TIn) == typeof(BLL.Models.BLLProfile))
+            if (_converters.TryGetValue(new TypeKey { TIn = typeof(TIn), TOut = typeof(TOut) }, out Func<object, object> func))
             {
-                var data = input as BLL.Models.BLLProfile;
-                if(typeof(TOut) == typeof(ProfileViewModel))
-                {
-                    return new ProfileViewModel
-                    {
-                        Id = data.Id,
-                        Name = data.Name,
-                        Email = data.Email,
-                        Role = data.Role.Name
-                    } as TOut;
-                }
-                if (typeof(TOut) == typeof(UpdateProfileModel))
-                {
-                    return new UpdateProfileModel
-                    {
-                        Id = data.Id,
-                        Role = data.Role.Name,
-                        Name = data.Name,
-                        Email = data.Email,
-                        Password = data.PasswordHash,
-                    } as TOut;
-                }
-            }
-
-            if (typeof(TIn) == typeof(UpdateProfileModel))
-            {
-                var data = input as UpdateProfileModel;
-                return new BLL.Models.Profile
-                {
-                    Id = data.Id,
-                    Name = data.Name,
-                    Email = data.Email,
-                    PasswordHash = data.Password,
-                    Role = new BLL.Models.Role { Name = data.Role }
-                } as TOut;
-            }
-
-            if (typeof(TIn) == typeof(BLL.Models.ProfilePermission))
-            {
-                var data = input as BLL.Models.ProfilePermission;
-                return new ProfilePermission
-                {
-                    PermissionNames = data.PermissionNames,
-                    Id = data.Id
-                } as TOut;
-            }
-
-            if (typeof(TIn) == typeof(LoginModel))
-            {
-                var data = input as LoginModel;
-                return new BLL.Models.Profile
-                {
-                    PasswordHash = data.Password,
-                    Email = data.Email
-                } as TOut;
-            }
-
-            if (typeof(TIn) == typeof(RegisterModel))
-            {
-                var data = input as RegisterModel;
-                return new BLL.Models.RegisterModel
-                {
-                    Name = data.Name,
-                    Email = data.Email,
-                    Password = data.Password
-                } as TOut;
-            }
-
-            if (typeof(TIn) == typeof(AddProfileModel))
-            {
-                var data = input as AddProfileModel;
-                return new BLL.Models.AddProfileModel
-                {
-                    Name = data.Name,
-                    Email = data.Email,
-                    Password = data.Password
-                } as TOut;
-            }
-
-            if (typeof(TIn) == typeof(DAL.Models.Profile))
-            {
-                var data = input as DAL.Models.Profile;
-                return new ProfileViewModel
-                {
-                    Id = data.Id,
-                    Name = data.Name,
-                    Email = data.Email,
-                    Role = data.Role.Name
-                } as TOut;
-            }
-
-            if (typeof(TIn) == typeof(BLL.Models.Role))
-            {
-                var data = input as BLL.Models.Role;
-
-                var profilesCollection = new List<Profile>();
-                foreach(var profile in data.Profile)
-                {
-                    profilesCollection.Add(To<BLL.Models.Profile, Profile>(profile));
-                }
-
-                var rolePermissionCollection = new List<RolePermission>();
-                foreach (var rolePermission in data.RolePermission)
-                {
-                    rolePermissionCollection.Add(To<BLL.Models.RolePermission, RolePermission>(rolePermission));
-                }
-
-                return new Role
-                {
-                    Id = data.Id,
-                    Name = data.Name,
-                    Profile = profilesCollection,
-                    RolePermission = rolePermissionCollection
-                } as TOut;
-            }
-
-            if (typeof(TIn) == typeof(DAL.Models.Role))
-            {
-                var data = input as DAL.Models.Role;
-
-                var profilesCollection = new List<Profile>();
-                foreach (var profile in data.Profile)
-                {
-                    profilesCollection.Add(To<DAL.Models.Profile, Profile>(profile));
-                }
-
-                var rolePermissionCollection = new List<RolePermission>();
-                foreach (var rolePermission in data.RolePermission)
-                {
-                    rolePermissionCollection.Add(To<DAL.Models.RolePermission, RolePermission>(rolePermission));
-                }
-
-                return new Role
-                {
-                    Id = data.Id,
-                    Name = data.Name,
-                    Profile = profilesCollection,
-                    RolePermission = rolePermissionCollection
-                } as TOut;
-            }
-
-            if (typeof(TIn) == typeof(BLL.Models.RolePermission))
-            {
-                var data = input as BLL.Models.RolePermission;
-                return new RolePermission
-                {
-                    Id = data.Id,
-                    Permission = To<BLL.Models.Permission, Permission>(data.Permission),
-                    Role = To<BLL.Models.Role, Role>(data.Role),
-                    PermissionId = data.PermissionId,
-                    RoleId = data.RoleId
-                } as TOut;
-            }
-
-            if (typeof(TIn) == typeof(DAL.Models.RolePermission))
-            {
-                var data = input as DAL.Models.RolePermission;
-                return new RolePermission
-                {
-                    Id = data.Id,
-                    Permission = To<DAL.Models.Permission, Permission>(data.Permission),
-                    Role = To<DAL.Models.Role, Role>(data.Role),
-                    PermissionId = data.PermissionId,
-                    RoleId = data.RoleId
-                } as TOut;
-            }
-
-            if (typeof(TIn) == typeof(BLL.Models.Permission))
-            {
-                var data = input as BLL.Models.Permission;
-
-                var rolePermissionCollection = new List<RolePermission>();
-                foreach (var rolePermission in data.RolePermission)
-                {
-                    rolePermissionCollection.Add(To<BLL.Models.RolePermission, RolePermission>(rolePermission));
-                }
-
-                return new Permission
-                {
-                    Id = data.Id,
-                    Name = data.Name,
-                    RolePermission = rolePermissionCollection
-                } as TOut;
-            }
-
-            if (typeof(TIn) == typeof(DAL.Models.Permission))
-            {
-                var data = input as DAL.Models.Permission;
-
-                var rolePermissionCollection = new List<RolePermission>();
-                foreach (var rolePermission in data.RolePermission)
-                {
-                    rolePermissionCollection.Add(To<DAL.Models.RolePermission, RolePermission>(rolePermission));
-                }
-
-                return new Permission
-                {
-                    Id = data.Id,
-                    Name = data.Name,
-                    RolePermission = rolePermissionCollection
-                } as TOut;
+                return (TOut)func?.Invoke(input);
             }
 
             return default;

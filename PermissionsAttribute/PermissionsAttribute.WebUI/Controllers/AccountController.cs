@@ -1,39 +1,39 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using PermissionsAttribute.BLL.Services.AccountService;
+using PermissionsAttribute.BLL.Services.ClaimService;
 using PermissionsAttribute.WebUI.Models;
 using PermissionsAttribute.WebUI.Models.ViewModels.Authentication;
 using PermissionsAttribute.WebUI.Models.ViewModels.Errors;
-using Utils;
 
 namespace PermissionsAttribute.WebUI.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly IAccountService _service;
+        private readonly IAccountService _accountService;
 
-        public AccountController(IAccountService accService)
+        private readonly IClaimService _claimService;
+
+        public AccountController(IAccountService accService, IClaimService claimService)
         {
-            _service = accService;
+            _accountService = accService;
+            _claimService = claimService;
         }
 
         public ActionResult Error()
         {
-            var permissions = new ErrorModel();
-            foreach(var claim in User.Claims)
+            var error = new ErrorModel
             {
-                if(claim.Type == ClaimsIdentity.DefaultRoleClaimType)
-                {
-                    permissions.Permissions.Add(claim.Value);
-                }
-            }
+                Permissions = _claimService
+                .GetPermissions()
+                .ToList()
+            };
 
-            return View("Views/Shared/Error.cshtml", permissions);
+            return View("Views/Shared/Error.cshtml", error);
         }
 
         [HttpGet]
@@ -51,12 +51,12 @@ namespace PermissionsAttribute.WebUI.Controllers
                 return View(model);
             }
 
-            var convertedProfile = Utils.Convert.To<RegisterModel, BLL.Models.RegisterModel>(model);
-            var registeredProfilePermissions = await _service.RegisterProfileAsync(convertedProfile);
+            var convertedProfile = Utils.Convert.To<RegisterModel, BLL.Models.Authentication.RegisterModel>(model);
+            var registeredProfilePermissions = await _accountService.RegisterProfileAsync(convertedProfile);
 
             if (registeredProfilePermissions != null)
             {
-                var convertedPermission = Utils.Convert.To<BLL.Models.ProfilePermission, ProfilePermission>(registeredProfilePermissions);
+                var convertedPermission = Utils.Convert.To<BLL.Models.ProfileModels.ProfilePermission, ProfilePermission>(registeredProfilePermissions);
 
                 await Authenticate(convertedPermission, model.Email);
 
@@ -82,12 +82,12 @@ namespace PermissionsAttribute.WebUI.Controllers
                 return View(model);
             }
 
-            var permission = await _service.LogIn(Utils.Convert.To<LoginModel, BLL.Models.Profile>(model));
+            var permission = await _accountService.LogIn(Utils.Convert.To<LoginModel, BLL.Models.Authentication.LoginModel>(model));
 
-            var convertedPermission = Utils.Convert.To<BLL.Models.ProfilePermission, ProfilePermission>(permission);
-
-            if (convertedPermission != null && convertedPermission.PermissionNames.Any())
+            if (permission != null && permission.PermissionNames.Any())
             {
+                var convertedPermission = Utils.Convert.To<BLL.Models.ProfileModels.ProfilePermission, ProfilePermission>(permission);
+
                 await Authenticate(convertedPermission, model.Email);
 
                 return RedirectToAction("GetAllProfiles", "Profile");
@@ -107,21 +107,11 @@ namespace PermissionsAttribute.WebUI.Controllers
         [NonAction]
         private async Task Authenticate(ProfilePermission permission, string email)
         {
-            var claims = new List<Claim>();
-            foreach (var permissionName in permission.PermissionNames)
-            {
-                claims.Add(new Claim(ClaimsIdentity.DefaultRoleClaimType, permissionName));
-            }
+            _claimService.AddPermissions(permission.PermissionNames);
+            _claimService.AddId(permission.Id);
+            _claimService.AddEmail(email);
 
-            claims.Add(new Claim("email", email));
-            claims.Add(new Claim("id", permission.Id.ToString()));
-
-            ClaimsIdentity claimsIdentity = new ClaimsIdentity(
-                claims,
-                "ApplicationCookie",
-                ClaimsIdentity.DefaultNameClaimType,
-                ClaimsIdentity.DefaultRoleClaimType
-            );
+            var claimsIdentity = _claimService.GetClaimsIdentity();
 
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
         }

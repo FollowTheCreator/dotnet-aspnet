@@ -1,4 +1,4 @@
-﻿namespace PermissionsAttribute.BLL.Models
+﻿namespace PermissionsAttribute.BLL.Models.Authentication
 {
     public class RegisterModel
     {

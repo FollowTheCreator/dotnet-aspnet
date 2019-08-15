@@ -1,4 +1,5 @@
-﻿using PermissionsAttribute.BLL.Models;
+﻿using PermissionsAttribute.BLL.Models.Authentication;
+using PermissionsAttribute.BLL.Models.ProfileModels;
 using System.Threading.Tasks;
 
 namespace PermissionsAttribute.BLL.Services.AccountService
@@ -11,6 +12,6 @@ namespace PermissionsAttribute.BLL.Services.AccountService
 
         Task<bool> IsEmailExistsAsync(string email);
 
-        Task<ProfilePermission> LogIn(Profile profile);
+        Task<ProfilePermission> LogIn(LoginModel model);
     }
 }

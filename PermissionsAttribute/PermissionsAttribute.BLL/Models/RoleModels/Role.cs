@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using PermissionsAttribute.BLL.Models.ProfileModels;
+using System.Collections.Generic;
 
-namespace PermissionsAttribute.BLL.Models
+namespace PermissionsAttribute.BLL.Models.RoleModels
 {
     public partial class Role
     {
