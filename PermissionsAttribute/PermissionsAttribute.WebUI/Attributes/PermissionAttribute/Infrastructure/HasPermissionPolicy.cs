@@ -35,18 +35,8 @@ namespace PermissionsAttribute.WebUI.Attributes.PermissionAttribute.Infrastructu
 
         private static Permissions GetPermission(string stringPermission)
         {
-            switch (stringPermission)
-            {
-                case "GetProfileById":
-                    return Permissions.GetProfileById;
-                case "GetProfiles":
-                    return Permissions.GetProfiles;
-                case "AddProfile":
-                    return Permissions.AddProfile;
-                case "UpdateProfile":
-                    return Permissions.UpdateProfile;
-                case "DeleteProfile":
-                    return Permissions.DeleteProfile;
+            if(Enum.TryParse(stringPermission, out Permissions permissions)){
+                return permissions;
             }
 
             return default;

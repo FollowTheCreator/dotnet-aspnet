@@ -5,22 +5,22 @@ namespace PermissionsAttribute.WebUI.Attributes.PermissionAttribute
 {
     public class HasPermissionAttribute : AuthorizeAttribute
     {
-        public HasPermissionAttribute(Permissions role)
+        public HasPermissionAttribute(Permissions permission)
         {
-            Role = role;
+            Permission = permission;
         }
 
-        private Permissions _role;
+        private Permissions _permission;
 
-        public Permissions Role
+        public Permissions Permission
         {
             get
             {
-                return _role;
+                return _permission;
             }
             set
             {
-                _role = value;
+                _permission = value;
                 Policy = $"{"HasPermission"}.{value}";
             }
         }

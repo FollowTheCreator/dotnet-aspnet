@@ -5,11 +5,11 @@ namespace PermissionsAttribute.WebUI.Attributes.PermissionAttribute.Infrastructu
 {
     public class HasPermissionRequirement : IAuthorizationRequirement
     {
-        public HasPermissionRequirement(Permissions role)
+        public HasPermissionRequirement(Permissions permission)
         {
-            Role = role;
+            Permission = permission;
         }
 
-        public Permissions Role { get; private set; }
+        public Permissions Permission { get; private set; }
     }
 }

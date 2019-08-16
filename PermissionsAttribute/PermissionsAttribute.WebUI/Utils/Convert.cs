@@ -41,7 +41,7 @@ namespace PermissionsAttribute.WebUI.Utils
 
             public override int GetHashCode()
             {
-                return (TIn.GetHashCode() << 2) ^ TOut.GetHashCode();
+                return Tuple.Create(TIn, TOut).GetHashCode();
             }
         }
 
