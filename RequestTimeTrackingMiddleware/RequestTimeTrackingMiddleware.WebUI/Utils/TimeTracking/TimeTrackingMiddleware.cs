@@ -9,9 +9,12 @@ namespace RequestTimeTrackingMiddleware.WebUI.Utils.TimeTracking
     {
         private readonly RequestDelegate _next;
 
+        private readonly Logger _logger;
+
         public TimeTrackingMiddleware(RequestDelegate next)
         {
             _next = next;
+            _logger = LogManager.GetCurrentClassLogger();
         }
 
         public async Task InvokeAsync(HttpContext context)
@@ -23,8 +26,8 @@ namespace RequestTimeTrackingMiddleware.WebUI.Utils.TimeTracking
 
             sw.Stop();
 
-            Logger Logger = LogManager.GetCurrentClassLogger();
-            Logger.Info($"{sw.ElapsedMilliseconds} ms");
+            
+            _logger.Info($"{sw.ElapsedMilliseconds} ms");
         }
     }
 }
