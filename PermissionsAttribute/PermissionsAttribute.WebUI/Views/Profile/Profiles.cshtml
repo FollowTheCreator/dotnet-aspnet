@@ -1,0 +1,48 @@
+﻿@model IEnumerable<ProfileViewModel>
+
+@using PermissionsAttribute.WebUI.Models.ViewModels
+
+    <div>
+        <table class="table mt-3">
+            <thead class="thead-light">
+                <tr>
+                    <th class="text-dark">
+                        Id
+                    </th>
+                    <th class="text-dark">
+                        Name
+                    </th>
+                    <th class="text-dark">
+                        Email
+                    </th>
+                    <th class="text-dark">
+                        Role
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var profile in Model)
+                {
+                    <tr>
+                        <td>@profile.Id</td>
+                        <td>@profile.Name</td>
+                        <td>@profile.Email</td>
+                        <td>@profile.Role</td>
+                        <td>
+                            <a asp-controller="Profile" asp-action="GetProfileById" asp-route-id="@profile.Id" class="text-dark">Details</a>
+                        </td>
+                    </tr>
+                }
+                <tr>
+                    <td colspan="5">
+                        <div>
+                            <a asp-controller="Profile" asp-action="AddProfile" class="btn bg-light w-100">
+                                <h4>+</h4>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>

@@ -1,0 +1,26 @@
+﻿@if (User.Identity.IsAuthenticated)
+{
+    <ul class="nav navbar-nav navbar-right">
+        <li>
+            <a asp-controller="Profile" asp-action="GetProfileById" asp-route-id="@User.Claims.FirstOrDefault(claim => claim.Type == "id").Value" class="mx-2 text-light">
+                Hello, @User.Claims.FirstOrDefault(claim => claim.Type == "email").Value
+            </a>
+        </li>
+        <li class="text-light">|</li>
+        <li>
+            <a asp-controller="Account" asp-action="LogOff" class="mx-2 text-light">Log Off</a>
+        </li>
+    </ul>
+}
+else
+{
+    <ul class="navbar-nav">
+        <li>
+            <a class="mx-2 text-light" asp-controller="Account" asp-action="LogIn">Log In</a>
+        </li>
+        <li class="text-light">|</li>
+        <li>
+            <a class="mx-2 text-light" asp-controller="Account" asp-action="Register">Register</a>
+        </li>
+    </ul>
+}

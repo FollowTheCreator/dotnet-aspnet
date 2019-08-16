@@ -1,0 +1,49 @@
+﻿@model PermissionsAttribute.WebUI.Models.ViewModels.UpdateProfileModel
+
+<div class="mt-3">
+    <h2>Update</h2>
+</div>
+
+<form asp-action="UpdateProfile" asp-controller="Profile" asp-anti-forgery="true" class="form-group mx-auto w-25">
+    <div class="validation" asp-validation-summary="ModelOnly"></div>
+    <br>
+    <div>
+        <div>
+            <label asp-for="Id">Id</label><br />
+            <input type="text" asp-for="Id" class="form-control" value="@Model.Id" readonly />
+        </div>
+        <br>
+        <div>
+            <label asp-for="Role">Role</label><br />
+            <input type="text" asp-for="Role" class="form-control" value="@Model.Role" readonly />
+        </div>
+        <br>
+        <div>
+            <label asp-for="Name">Name</label><br />
+            <input type="text" asp-for="Name" class="form-control" value="@Model.Name" />
+            <span asp-validation-for="Name"></span>
+        </div>
+        <br>
+        <div>
+            <label asp-for="Email">Email</label><br />
+            <input type="text" asp-for="Email" class="form-control" value="@Model.Email" />
+            <span asp-validation-for="Email"></span>
+        </div>
+        <br>
+        <div>
+            <label asp-for="Password">Password</label><br />
+            <input asp-for="Password" class="form-control" />
+            <span asp-validation-for="Password"></span>
+        </div>
+        <br>
+        <div>
+            <label asp-for="ConfirmPassword">Confirm Password</label><br />
+            <input asp-for="ConfirmPassword" class="form-control" />
+            <span asp-validation-for="ConfirmPassword"></span>
+        </div>
+        <br />
+        <div class="text-center">
+            <input type="submit" value="Update" class="btn btn-outline-secondary w-100 mt-5" />
+        </div>
+    </div>
+</form>
