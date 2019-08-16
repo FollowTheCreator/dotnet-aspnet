@@ -7,7 +7,7 @@ namespace PermissionsAttribute.WebUI.Attributes.PermissionAttribute.Infrastructu
     {
         protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, HasPermissionRequirement requirement)
         {
-            if (!context.User.HasClaim(c => c.Value == requirement.Role.ToString()))
+            if (!context.User.HasClaim(c => c.Value == requirement.Permission.ToString()))
             {
                 return Task.FromResult(0);
             }
