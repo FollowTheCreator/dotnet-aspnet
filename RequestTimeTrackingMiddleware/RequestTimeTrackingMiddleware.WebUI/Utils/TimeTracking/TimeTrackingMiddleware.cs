@@ -22,12 +22,16 @@ namespace RequestTimeTrackingMiddleware.WebUI.Utils.TimeTracking
             var sw = new Stopwatch();
             sw.Start();
 
-            await _next.Invoke(context);
+            try
+            {
+                await _next.Invoke(context);
+            }
+            finally
+            {
+                sw.Stop();
 
-            sw.Stop();
-
-            
-            _logger.Info($"{sw.ElapsedMilliseconds} ms");
+                _logger.Info($"{sw.ElapsedMilliseconds} ms");
+            }
         }
     }
 }
