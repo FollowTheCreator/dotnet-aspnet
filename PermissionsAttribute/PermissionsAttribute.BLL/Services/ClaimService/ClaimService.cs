@@ -7,6 +7,10 @@ namespace PermissionsAttribute.BLL.Services.ClaimService
 {
     public class ClaimService : IClaimService
     {
+        private const string IdType = "id";
+
+        private const string EmailType = "email";
+
         private readonly IHttpContextAccessor _httpContextAccessor;
 
         public ClaimService(IHttpContextAccessor httpContextAccessor)
@@ -19,12 +23,12 @@ namespace PermissionsAttribute.BLL.Services.ClaimService
 
         public void AddEmail(string email)
         {
-            Claims.Add(new Claim("email", email));
+            Claims.Add(new Claim(EmailType, email));
         }
 
         public void AddId(int id)
         {
-            Claims.Add(new Claim("id", id.ToString()));
+            Claims.Add(new Claim(IdType, id.ToString()));
         }
 
         public void AddPermissions(IEnumerable<string> permissionNames)
@@ -41,7 +45,7 @@ namespace PermissionsAttribute.BLL.Services.ClaimService
                 .HttpContext
                 .User
                 .Claims
-                .FirstOrDefault(c => c.Type == "id")
+                .FirstOrDefault(c => c.Type == IdType)
                 .Value;
 
             return id.ToString() == currentId;

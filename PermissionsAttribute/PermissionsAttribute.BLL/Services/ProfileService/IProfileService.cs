@@ -18,6 +18,6 @@ namespace PermissionsAttribute.BLL.Services.ProfileService
 
         Task<bool> IsEmailExistsAsync(string email);
 
-        Task<bool> AddProfileAsync(AddProfileModel profile);
+        Task<AddProfileResult> AddProfileAsync(AddProfileModel profile);
     }
 }

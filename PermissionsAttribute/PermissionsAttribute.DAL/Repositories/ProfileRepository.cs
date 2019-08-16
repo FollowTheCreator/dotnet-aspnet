@@ -47,13 +47,13 @@ namespace PermissionsAttribute.DAL.Repositories
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<Profile> GetCurrentProfile(Profile profile)
+        public async Task<Profile> GetCurrentProfile(string email, string passwordHash)
         {
             var currentProfile = await _context
                 .Profile
                 .FirstOrDefaultAsync(p =>
-                    p.Email == profile.Email &&
-                    p.PasswordHash == profile.PasswordHash
+                    p.Email == email &&
+                    p.PasswordHash == passwordHash
                 );
 
             return currentProfile;

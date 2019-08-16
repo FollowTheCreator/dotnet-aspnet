@@ -11,6 +11,6 @@ namespace PermissionsAttribute.DAL.Repositories
 
         Task<Role> GetRoleByNameAsync(string name);
 
-        Task<Profile> GetCurrentProfile(Profile profile);
+        Task<Profile> GetCurrentProfile(string email, string passwordHash);
     }
 }

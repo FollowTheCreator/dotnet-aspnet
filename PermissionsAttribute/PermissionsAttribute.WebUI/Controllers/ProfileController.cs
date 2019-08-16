@@ -57,7 +57,8 @@ namespace PermissionsAttribute.WebUI.Controllers
             }
 
             var convertedModel = Utils.Convert.To<AddProfileModel, BLL.Models.ProfileModels.AddProfileModel>(model);
-            if (await _profileService.AddProfileAsync(convertedModel))
+            var addProfileResult = await _profileService.AddProfileAsync(convertedModel);
+            if (!addProfileResult.AlreadyExists)
             {
                 return RedirectToAction("GetAllProfiles", "Profile");
             }
