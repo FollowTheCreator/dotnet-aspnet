@@ -9,12 +9,9 @@ namespace RequestTimeTrackingMiddleware.WebUI.Utils.TimeTracking
     {
         private readonly RequestDelegate _next;
 
-        private readonly Logger _logger;
-
         public TimeTrackingMiddleware(RequestDelegate next)
         {
             _next = next;
-            _logger = LogManager.GetCurrentClassLogger();
         }
 
         public async Task InvokeAsync(HttpContext context)
@@ -22,16 +19,12 @@ namespace RequestTimeTrackingMiddleware.WebUI.Utils.TimeTracking
             var sw = new Stopwatch();
             sw.Start();
 
-            try
-            {
-                await _next.Invoke(context);
-            }
-            finally
-            {
-                sw.Stop();
+            await _next.Invoke(context);
 
-                _logger.Info($"{sw.ElapsedMilliseconds} ms");
-            }
+            sw.Stop();
+
+            Logger Logger = LogManager.GetCurrentClassLogger();
+            Logger.Info($"{sw.ElapsedMilliseconds} ms");
         }
     }
 }

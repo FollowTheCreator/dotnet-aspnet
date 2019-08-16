@@ -1,0 +1,17 @@
+﻿@model ErrorModel
+
+@using PermissionsAttribute.WebUI.Models.ViewModels.Errors
+
+<h1>Access error</h1>
+
+<h2>You don't have the required permissions</h2>
+
+Your permissions:
+<ul>
+    @foreach (var permission in Model.Permissions)
+    {
+        <li>
+            @permission
+        </li>
+    }
+</ul>
