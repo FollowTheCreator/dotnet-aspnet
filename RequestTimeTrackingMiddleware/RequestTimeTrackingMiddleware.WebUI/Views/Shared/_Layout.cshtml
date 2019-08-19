@@ -1,0 +1,21 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RequestTimeTrackingMiddleware</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark justify-content-between">
+        <ul class="navbar-nav ml-5">
+            <li class="nav-item ml-5"><a class="nav-link" asp-controller="Profile" asp-action="GetAllProfiles">GetAllProfiles</a></li>
+        </ul>
+    </nav>
+
+    <div class="container body-content">
+        @RenderBody()
+    </div>
+</body>
+</html>
